@@ -1,20 +1,77 @@
 {
   "name": "Hypatia",
   "patterns": [
-		{"include": "#comment"}
+    { "include": "#comments"   },
+    { "include": "#hypatia"    },
+    { "include": "#lingua"     },
+    { "include": "#alphabetum" },
+    { "include": "#intervalla" },
+    { "include": "#separator " },
+    { "include": "#lexicon"    },
+    { "include": "#mutabilia"  },
+    { "include": "#keywords"   }
   ],
   "repository": {
-    "comment": {
+    "comments": {
       "patterns": [
         {
-          "name": "comment.line.double-dash.hypatia",
-          "begin": "--",
-          "end": "\n"
+          "name": "comment.hypatia",
+          "match": "--.*"
         },
         {
-          "name": "comment.block.hypatia",
-          "begin": "\/[-]",
-          "end": "[-](\/)"
+          "name": "comment.hypatia",
+          "begin": "/-",
+          "end": "-/"
+        }
+      ]
+    },
+    "hypatia": {
+      "patterns": [
+        {
+          "match": "(\\$Hypatia)(.+)(.*)(\\$\\:)",
+          "captures": {
+            "1": { "name": "keyword.hypatia" },
+            "2": { "name": "dialect.hypatia" },
+            "3": { "name": "text.hypatia"    },
+            "4": { "name": "keyword.hypatia" }
+          }
+        }
+      ]
+    },
+    "lingua": {
+      "patterns": [
+        {
+          "match": "(\\$Lingua)(.+)(.*)(\\$\\:)",
+          "captures": {
+            "1": { "name": "keyword.hypatia" },
+            "2": { "name": "lingua.hypatia"  },
+            "3": { "name": "text.hypatia"    },
+            "4": { "name": "keyword.hypatia" }
+          }
+        }
+      ]
+    },
+    "alphabetum": {
+      "patterns": [
+        {
+          "match": "(\\$Alphabetum)(.*)(\\$\\.)",
+          "captures": {
+            "1": { "name": "keyword.hypatia"    },
+            "2": { "name": "alphabetum.hypatia" },
+            "3": { "name": "keyword.hypatia"    }
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.hypatia",
+          "match": "\\$(Alphabetum|Intervalla|Separator|Lexicon|Mutabilia|post|ante|Sit|Principium|Productum|Regula|Derivatio|Probatio|Assumo|per|Sententiam|Regulam|Derivationem|Rationem|Obtineo|cum|Consequor|Reitero|Divino|Assero|ex|Probatione|Derivatione|Ratione|Praemissam|Vacuum)\\b"
+        },
+        {
+          "name": "keyword.hypatia",
+          "match": "\\$(\\.|\\:|\\=|\\,|\\-|\\;|\\{|\\})"
         }
       ]
     }

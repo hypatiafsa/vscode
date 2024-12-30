@@ -1,0 +1,62 @@
+{
+  "name": "Hypatia",
+  "type": "dark",
+  "colors": {
+    "editor.background":                    "#1E1E1E",
+		"editor.foreground":                    "#FAFAFA",
+		"editor.selectionHighlightBackground":  "#AFFAFF",
+		"editor.inactiveSelectionBackground":   "#3A3D41",
+		"editorLineNumber.foreground":          "#2B91AF",
+		"editorLineNumber.activeForeground":    "#0F9FFF",
+		"editorIndentGuide.background":         "#404040",
+		"editorIndentGuide.activeBackground":   "#707070",
+		"editorInlayHint.background":           "#3E3E3E",
+		"editorInlayHint.foreground":           "#A9A8A7"
+  },
+  "tokenColors": [
+    {
+      "scope": "comment.hypatia",
+      "settings": {
+        "foreground": "#55AA55",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "scope": "text.hypatia",
+      "settings": {
+        "foreground": "#FF0000"
+      }
+    },
+    {
+      "scope": "dialect.hypatia",
+      "settings": {
+        "foreground": "#FF00FF"
+      }
+    },
+    {
+      "scope": "lingua.hypatia",
+      "settings": {
+        "foreground": "#FFFF00"
+      }
+    },
+    {
+      "scope": "alphabetum.hypatia",
+      "settings": {
+        "foreground": "#AAFF00"
+      }
+    },
+    {
+      "scope": "ratio.hypatia",
+      "settings": {
+        "foreground": "#AAFF00"
+      }
+    },
+    {
+      "scope": "keyword.hypatia",
+      "settings": {
+        "foreground": "#00AAFF",
+        "fontStyle": "bold"
+      }
+    }
+  ]
+}

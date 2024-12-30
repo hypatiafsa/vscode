@@ -42,6 +42,13 @@
         "path": "./syntaxes/hypatia.json"
       }
     ],
+    "themes": [
+      {
+        "label": "hypatia",
+        "uiTheme": "vs-dark",
+        "path": "./themes/hypatia.json"
+      }
+    ],
     "configurationDefaults": {
       "[hypatia]": {
         "editor.tabSize": 2,
