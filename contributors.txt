@@ -1,0 +1,16 @@
+The following authors have made significant contributions to the design,
+development, and maintenance of the Hypatia environment. The copyright for their
+contributions is held by the individuals and their affiliated institutions at
+the time of their work. For detailed information regarding copyright and
+licensing, please refer to the license.txt file.
+
+Current Contributors (with current affiliations):
+
+- Maria Della Valle, Università degli Studi di Napoli Federico II
+  * Lead developer of the first incarnation of the Hypatia software (2024–2025)
+- Fabio Mogavero, Università degli Studi di Napoli Federico II
+  * Original author and lead designer of the Hypatia environment (2014–2025)
+
+Past Contributors (with affiliations at the time of their contributions):
+
+None to date.

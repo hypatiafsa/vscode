@@ -1,0 +1,23 @@
+{
+  "name": "Hypatia",
+  "patterns": [
+		{"include": "#comment"}
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.line.double-dash.hypatia",
+          "begin": "--",
+          "end": "\n"
+        },
+        {
+          "name": "comment.block.hypatia",
+          "begin": "\/[-]",
+          "end": "[-](\/)"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.hypatia"
+}

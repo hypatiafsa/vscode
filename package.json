@@ -1,0 +1,52 @@
+{
+  "name": "hypatia",
+  "displayName": "Hypatia",
+  "description": "Hypatia language support for VSCode",
+  "author": "hypatiadevteam",
+  "publisher": "hypatiafsa",
+  "version": "0.0.0",
+  "homepage": "https://hypatiafsa.github.io/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypatiafsa/hypatia-vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/hypatiafsa/hypatia-vscode/issues"
+  },
+  "license": "NCSA",
+  "icon": "...",
+  "categories": [
+    "Programming Languages"
+  ],
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "hypatia",
+        "aliases": [
+          "Hypatia"
+        ],
+        "extensions": [
+          ".hyp",
+          ".hypatia"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "hypatia",
+        "scopeName": "source.hypatia",
+        "path": "./syntaxes/hypatia.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[hypatia]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "comments": {
+    "lineComment": "--",
+    "blockComment": ["/-", "-/"]
+  },
+  "brackets": [
+    [ "$",  "$"  ],
+    [ "(",  ")"  ],
+    [ "[",  "]"  ],
+    [ "{",  "}"  ],
+    [ "'",  "'"  ],
+    [ "`",  "`"  ],
+    [ "\"", "\"" ]
+  ],
+  "surroundingPairs": [
+    [ "$",  "$"  ],
+    [ "(",  ")"  ],
+    [ "[",  "]"  ],
+    [ "{",  "}"  ],
+    [ "'",  "'"  ],
+    [ "`",  "`"  ],
+    [ "\"", "\"" ]
+  ],
+  "autoClosingPairs": [
+    { "open": "$Hypatia",    "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Lingua",     "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Alphabetum", "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Intervalla", "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Separator",  "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Lexicon",    "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Mutabilia",  "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Sit",        "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Principium", "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Productum",  "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Regula",     "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Derivatio",  "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Probatio",   "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Assumo",     "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Obtineo",    "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Consequor",  "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Reitero",    "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Divino",     "close": "$.", "notIn": [ "comment" ] },
+    { "open": "$Assero",     "close": "$.", "notIn": [ "comment" ] }
+  ]
+  // "autoCloseBefore": "",
+  // "folding": {
+  //   "markers": {
+  //     "start": "",
+  //     "end": ""
+  //   }
+  // },
+  // "wordPattern": "",
+  // "indentationRules": {
+  //   "increaseIndentPattern": "",
+  //   "decreaseIndentPattern": ""
+  // }
+  // "onEnterRules": [
+  //   { "beforeText": "", "action": { "indent": "indent" } }
+  // ]
+}
