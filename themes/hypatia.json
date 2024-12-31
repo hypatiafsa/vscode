@@ -3,15 +3,15 @@
   "type": "dark",
   "colors": {
     "editor.background":                    "#1E1E1E",
-		"editor.foreground":                    "#FAFAFA",
-		"editor.selectionHighlightBackground":  "#AFFAFF",
-		"editor.inactiveSelectionBackground":   "#3A3D41",
-		"editorLineNumber.foreground":          "#2B91AF",
-		"editorLineNumber.activeForeground":    "#0F9FFF",
-		"editorIndentGuide.background":         "#404040",
-		"editorIndentGuide.activeBackground":   "#707070",
-		"editorInlayHint.background":           "#3E3E3E",
-		"editorInlayHint.foreground":           "#A9A8A7"
+    "editor.foreground":                    "#FAFAFA",
+    "editor.selectionHighlightBackground":  "#AFFAFF",
+    "editor.inactiveSelectionBackground":   "#3A3D41",
+    "editorLineNumber.foreground":          "#2B91AF",
+    "editorLineNumber.activeForeground":    "#0F9FFF",
+    "editorIndentGuide.background":         "#404040",
+    "editorIndentGuide.activeBackground":   "#707070",
+    "editorInlayHint.background":           "#3E3E3E",
+    "editorInlayHint.foreground":           "#A9A8A7"
   },
   "tokenColors": [
     {
@@ -24,38 +24,81 @@
     {
       "scope": "text.hypatia",
       "settings": {
-        "foreground": "#FF0000"
-      }
-    },
-    {
-      "scope": "dialect.hypatia",
-      "settings": {
-        "foreground": "#FF00FF"
-      }
-    },
-    {
-      "scope": "lingua.hypatia",
-      "settings": {
-        "foreground": "#FFFF00"
-      }
-    },
-    {
-      "scope": "alphabetum.hypatia",
-      "settings": {
-        "foreground": "#AAFF00"
-      }
-    },
-    {
-      "scope": "ratio.hypatia",
-      "settings": {
-        "foreground": "#AAFF00"
+        "foreground": "#AAAAAA",
+        "fontStyle": "italic"
       }
     },
     {
       "scope": "keyword.hypatia",
       "settings": {
-        "foreground": "#00AAFF",
+        "foreground": "#0077FF",
         "fontStyle": "bold"
+      }
+    },
+    {
+      "scope": "dialect.hypatia.hypatia",
+      "settings": {
+        "foreground": "#FF00FF"
+      }
+    },
+    {
+      "scope": "name.lingua.hypatia",
+      "settings": {
+        "foreground": "#FFFF00"
+      }
+    },
+    {
+      "scope": "content.alphabetum.hypatia",
+      "settings": {
+        "foreground": "#55FF00"
+      }
+    },
+    {
+      "scope": "content.intervalla.hypatia",
+      "settings": {
+        "foreground": "#FF5500"
+      }
+    },
+    {
+      "scope": "content.separatores.hypatia",
+      "settings": {
+        "foreground": "#00AAAA"
+      }
+    },
+    {
+      "scope": "content.lexicon.hypatia",
+      "settings": {
+        "foreground": "#AF50BF"
+      }
+    },
+    {
+      "scope": "content.mutabilia.hypatia",
+      "settings": {
+        "foreground": "#AF50BF"
+      }
+    },
+    {
+      "scope": "name.sententia.hypatia",
+      "settings": {
+        "foreground": "#00FFFF"
+      }
+    },
+    {
+      "scope": "content.sententia.hypatia",
+      "settings": {
+        "foreground": "#AFFFBF"
+      }
+    },
+    {
+      "scope": "name.ratio.hypatia",
+      "settings": {
+        "foreground": "#00FFFF"
+      }
+    },
+    {
+      "scope": "content.ratio.hypatia",
+      "settings": {
+        "foreground": "#AFFFBF"
       }
     }
   ]
