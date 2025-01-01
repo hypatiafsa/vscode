@@ -36,6 +36,13 @@
       }
     },
     {
+      "scope": "content.hypatia",
+      "settings": {
+        "foreground": "#AFFFBF",
+        "fontStyle": "bold"
+      }
+    },
+    {
       "scope": "dialect.hypatia.hypatia",
       "settings": {
         "foreground": "#FF00FF"
@@ -86,7 +93,7 @@
     {
       "scope": "content.sententia.hypatia",
       "settings": {
-        "foreground": "#AFFFBF"
+        "foreground": "#FFFFFF"
       }
     },
     {
@@ -98,7 +105,7 @@
     {
       "scope": "content.ratio.hypatia",
       "settings": {
-        "foreground": "#AFFFBF"
+        "foreground": "#FFFFFF"
       }
     }
   ]
