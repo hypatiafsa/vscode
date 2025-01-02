@@ -22,6 +22,13 @@
       }
     },
     {
+      "scope": "error.hypatia",
+      "settings": {
+        "foreground": "#FF0000",
+        "fontStyle": "italic"
+      }
+    },
+    {
       "scope": "text.hypatia",
       "settings": {
         "foreground": "#AAAAAA",
@@ -36,10 +43,15 @@
       }
     },
     {
+      "scope": "name.hypatia",
+      "settings": {
+        "foreground": "#00FFFF"
+      }
+    },
+    {
       "scope": "content.hypatia",
       "settings": {
-        "foreground": "#AFFFBF",
-        "fontStyle": "bold"
+        "foreground": "#AFFFBF"
       }
     },
     {
