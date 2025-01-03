@@ -36,7 +36,7 @@
       "patterns": [
         {
           "name": "declaration.hypatia.hypatia",
-          "begin": "(\\$Hypatia)\\s*(\\S+)(.*?(?=\\$\\:|$))",
+          "begin": "(\\$Hypatia)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?(?=\\$\\:|$))",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"         },
             "2": { "name": "dialect.hypatia.hypatia" },
@@ -59,7 +59,7 @@
       "patterns": [
         {
           "name": "declaration.lingua.hypatia",
-          "begin": "(\\$Lingua)\\s*(\\S+)(.*?(?=\\$\\:|$))",
+          "begin": "(\\$Lingua)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?(?=\\$\\:|$))",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"     },
             "2": { "name": "name.lingua.hypatia" },
@@ -120,7 +120,6 @@
         }
       ]
     },
-
     "separatores": {
       "patterns": [
         {
@@ -136,12 +135,17 @@
           "patterns": [
             {
               "name": "content.separatores.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
+              "match": "(?!\\$\\.)(\\S+?(?=\\s|\\$\\.|$))\\s+(?!\\$\\.)(\\S+?(?=\\s|\\$\\.|$))"
+            },
+            {
+              "name": "error.hypatia",
+              "match": "(?!\\$\\.)(\\S+?(?=\\s|\\$\\.|$))"
             }
           ]
         }
       ]
     },
+
     "lexicon": {
       "patterns": [
         {
@@ -210,7 +214,7 @@
       "patterns": [
         {
           "name": "declaration.principium.hypatia",
-          "begin": "(\\$Principium)\\s*(\\S+)(.*?)(\\$\\:)",
+          "begin": "(\\$Principium)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"        },
             "2": { "name": "name.sententia.hypatia" },
@@ -234,7 +238,7 @@
       "patterns": [
         {
           "name": "declaration.productum.hypatia",
-          "begin": "(\\$Productum)\\s*(\\S+)(.*?)(\\$\\:)",
+          "begin": "(\\$Productum)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"        },
             "2": { "name": "name.sententia.hypatia" },
@@ -258,7 +262,7 @@
       "patterns": [
         {
           "name": "declaration.regula.hypatia",
-          "begin": "(\\$Regula)\\s*(\\S+)(.*?)(\\$\\:)",
+          "begin": "(\\$Regula)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"    },
             "2": { "name": "name.ratio.hypatia" },
@@ -282,7 +286,7 @@
       "patterns": [
         {
           "name": "declaration.derivatio.hypatia",
-          "begin": "(\\$Derivatio)\\s*(\\S+)(.*?)(\\$\\:)",
+          "begin": "(\\$Derivatio)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
           "beginCaptures": {
             "1": { "name": "keyword.hypatia"    },
             "2": { "name": "name.ratio.hypatia" },
@@ -467,7 +471,7 @@
       "patterns": [
         {
           "name": "declaration.per.hypatia",
-          "match": "(?<=\\$per)\\s*(\\$Principium|\\$Productum|\\$Sententiam)\\s*(\\S+)(.*?)(\\$\\.)",
+          "match": "(?<=\\$per)\\s*(\\$Principium|\\$Productum|\\$Sententiam)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$\\.)",
           "captures": {
             "1": { "name": "keyword.hypatia" },
             "2": { "name": "name.hypatia"    },
@@ -477,7 +481,7 @@
         },
         {
           "name": "declaration.per.hypatia",
-          "match": "(?<=\\$per)\\s*(\\$Regulam|\\$Derivationem|\\$Rationem)\\s*(\\S+)(.*?)(\\$cum|\\$\\.)",
+          "match": "(?<=\\$per)\\s*(\\$Regulam|\\$Derivationem|\\$Rationem)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$cum|\\$\\.)",
           "captures": {
             "1": { "name": "keyword.hypatia" },
             "2": { "name": "name.hypatia"    },
@@ -498,7 +502,7 @@
     "cum": {
       "patterns": [
         {
-          "name": "declaration.per.hypatia",
+          "name": "declaration.cum.hypatia",
           "begin": "(?<=\\$cum)",
           "end": "(\\$\\.)",
           "endCaptures": {
@@ -517,7 +521,7 @@
       "patterns": [
         {
           "name": "declaration.ex.hypatia",
-          "match": "(?<=\\$ex)\\s*(\\$Regula|\\$Derivatione|\\$Ratione)\\s*(\\S+)(.*?)(\\$cum|\\$\\.)",
+          "match": "(?<=\\$ex)\\s*(\\$Regula|\\$Derivatione|\\$Ratione)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$cum|\\$\\.)",
           "captures": {
             "1": { "name": "keyword.hypatia" },
             "2": { "name": "name.hypatia"    },
@@ -540,7 +544,7 @@
       "patterns": [
         {
           "name": "text.hypatia",
-          "match": ".+?(?=\\$|$)"
+          "match": ".+?"
         }
       ]
     }
