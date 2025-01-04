@@ -29,8 +29,16 @@ Hypatia language support for VSCode
 
 ...
 
+[ChangeLog](./changelog.md)
+
+...
+
 ---
 
 ## To Do
+
+...
+
+[ToDo](./todo.md)
 
 ...
