@@ -1,6 +1,10 @@
 # Todo
 
-List of tasks to be completed for the **Hypatia-VSCode** language support
+List of tasks to be completed for the Hypatia-VSCode language-support extension.
+
+## In Progress
+
+- [ ] ...
 
 ## High Priority
 
@@ -17,3 +21,7 @@ List of tasks to be completed for the **Hypatia-VSCode** language support
 ## Future Ideas
 
 - [ ] ...
+
+## Done
+
+- [✓] ...
