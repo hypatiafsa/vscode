@@ -1,24 +1,30 @@
 {
   "name": "Hypatia",
   "patterns": [
-    { "include": "#comments"    },
-    { "include": "#hypatia"     },
-    { "include": "#lingua"      },
-    { "include": "#alphabetum"  },
-    { "include": "#intervalla"  },
-    { "include": "#separatores" },
-    { "include": "#lexicon"     },
-    { "include": "#mutabilia"   },
-    { "include": "#sit"         },
-    { "include": "#principium"  },
-    { "include": "#productum"   },
-    { "include": "#regula"      },
-    { "include": "#derivatio"   },
-    { "include": "#probatio"    },
-    { "include": "#keyword"     },
-    { "include": "#text"        }
+    { "include": "#document" }
   ],
   "repository": {
+    "document": {
+      "patterns": [
+        { "include": "#comments"     },
+        { "include": "#hypatia"      },
+        { "include": "#lingua"       },
+        { "include": "#alphabetum"   },
+        { "include": "#intervalla"   },
+        { "include": "#separatores"  },
+        { "include": "#lexicon"      },
+        { "include": "#mutabilia"    },
+        { "include": "#sit"          },
+        { "include": "#principium"   },
+        { "include": "#productum"    },
+        { "include": "#regula"       },
+        { "include": "#derivatio"    },
+        { "include": "#probatio"     },
+        { "include": "#keyword"      },
+        { "include": "#escapedwords" },
+        { "include": "#text"         }
+      ]
+    },
     "comments": {
       "patterns": [
         {
@@ -536,7 +542,15 @@
       "patterns": [
         {
           "name": "error.hypatia",
-          "match": "\\$\\."
+          "match": "\\$\\.|\\$Vacuum"
+        }
+      ]
+    },
+    "escapedwords": {
+      "patterns": [
+        {
+          "name": "error.hypatia",
+          "match": "\\\\nihil|\\\\spatium|\\\\tabulatio|\\\\lineanova|\\\\caputnovum"
         }
       ]
     },
