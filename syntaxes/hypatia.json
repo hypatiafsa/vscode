@@ -6,26 +6,26 @@
   "repository": {
     "document": {
       "patterns": [
-        { "include": "#comments"     },
-        { "include": "#hypatia"      },
-        { "include": "#lingua"       },
-        { "include": "#alphabetum"   },
-        { "include": "#intervalla"   },
-        { "include": "#separatores"  },
-        { "include": "#lexicon"      },
-        { "include": "#mutabilia"    },
-        { "include": "#sit"          },
-        { "include": "#principium"   },
-        { "include": "#productum"    },
-        { "include": "#regula"       },
-        { "include": "#derivatio"    },
-        { "include": "#probatio"     },
-        { "include": "#keyword"      },
-        { "include": "#escapedwords" },
-        { "include": "#text"         }
+        { "include": "#comment"    },
+        { "include": "#hypatia"     },
+        { "include": "#lingua"      },
+        { "include": "#alphabetum"  },
+        { "include": "#intervalla"  },
+        { "include": "#separatores" },
+        { "include": "#lexicon"     },
+        { "include": "#mutabilia"   },
+        { "include": "#sit"         },
+        { "include": "#principium"  },
+        { "include": "#productum"   },
+        { "include": "#regula"      },
+        { "include": "#derivatio"   },
+        { "include": "#probatio"    },
+        { "include": "#keyword"     },
+        { "include": "#symbol"      },
+        { "include": "#text"        }
       ]
     },
-    "comments": {
+    "comment": {
       "patterns": [
         {
           "name": "comment.hypatia",
@@ -326,23 +326,28 @@
             "1": { "name": "keyword.hypatia" }
           },
           "patterns": [
-            { "include": "#assumo"    },
-            { "include": "#obtineo"   },
-            { "include": "#consequor" },
-            { "include": "#reitero"   },
-            { "include": "#divino"    },
-            { "include": "#assero"    },
-            { "include": "#sit"       },
-            { "include": "#per"       },
-            { "include": "#cum"       },
-            { "include": "#ex"        },
-            { "include": "#probatio"  },
-            {
-              "name": "text.hypatia",
-              "match": "\\S+"
-            }
+            { "include": "#proof" }
           ]
         }
+      ]
+    },
+
+    "proof": {
+      "patterns": [
+        { "include": "#comment"   },
+        { "include": "#assumo"    },
+        { "include": "#obtineo"   },
+        { "include": "#consequor" },
+        { "include": "#reitero"   },
+        { "include": "#divino"    },
+        { "include": "#assero"    },
+        { "include": "#sit"       },
+        { "include": "#per"       },
+        { "include": "#cum"       },
+        { "include": "#ex"        },
+        { "include": "#probatio"  },
+        { "include": "#symbol"    },
+        { "include": "#text"      }
       ]
     },
 
@@ -546,7 +551,7 @@
         }
       ]
     },
-    "escapedwords": {
+    "symbol": {
       "patterns": [
         {
           "name": "error.hypatia",
