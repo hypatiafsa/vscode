@@ -1,30 +1,30 @@
-# Todo
+# Hypatia-VSCode Todo
 
 List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## In Progress
 
-- Basic syntax higlighting
-- Basic code folding
+- Basic syntax highlighting.
+- Basic code folding.
 
 ## High Priority
 
-- [ ] None to date.
+- [ ] No tasks currently.
 
 ## Medium Priority
 
-- [ ] None to date.
+- [ ] No tasks currently.
 
 ## Low Priority
 
-- [ ] None to date.
+- [ ] Create detailed documentation.
 
 ## Future Ideas
 
-- [ ] Basic code completion
-- [ ] Basic code formatting
-- [ ] Basic language support
+- [ ] Basic code completion.
+- [ ] Basic code formatting.
+- [ ] Basic language support.
 
 ## Done ✓
 
-- [x] None to date.
+- [x] Initial project setup.
