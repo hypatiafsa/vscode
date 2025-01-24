@@ -4,8 +4,8 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## In Progress
 
-- Basic syntax highlighting.
 - Basic code folding.
+- Basic syntax highlighting.
 
 ## High Priority
 
@@ -23,7 +23,8 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 - [ ] Basic code completion.
 - [ ] Basic code formatting.
-- [ ] Basic language support.
+- [ ] Basic code diagnostic.
+- [ ] Full language support.
 
 ## Done ✓
 
