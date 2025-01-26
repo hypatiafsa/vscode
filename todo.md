@@ -28,4 +28,4 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## Done ✓
 
-- [x] Initial project setup (*29-12-2024*).
+- [x] Initial project setup (*2024.12.29*).
