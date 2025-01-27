@@ -6,7 +6,7 @@
   "repository": {
     "document": {
       "patterns": [
-        { "include": "#comment"    },
+        { "include": "#comment"     },
         { "include": "#hypatia"     },
         { "include": "#lingua"      },
         { "include": "#alphabetum"  },
@@ -340,8 +340,8 @@
         { "include": "#consequor" },
         { "include": "#reitero"   },
         { "include": "#divino"    },
-        { "include": "#assero"    },
         { "include": "#sit"       },
+        { "include": "#assero"    },
         { "include": "#per"       },
         { "include": "#cum"       },
         { "include": "#ex"        },

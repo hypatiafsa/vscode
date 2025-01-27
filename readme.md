@@ -17,6 +17,10 @@ Hypatia language support for VSCode
 
 ...
 
+[Versioning Policy](./versioning.md)
+
+...
+
 ---
 
 ## Installation
