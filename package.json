@@ -14,7 +14,7 @@
     "url": "https://github.com/hypatiafsa/hypatia-vscode/issues"
   },
   "license": "NCSA",
-  "icon": "...",
+  "icon": "images/hypatia.png",
   "categories": [
     "Programming Languages"
   ],
