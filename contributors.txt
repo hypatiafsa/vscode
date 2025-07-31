@@ -11,7 +11,7 @@ Current Contributors (with current affiliations):
   * Lead developer of the first incarnation of the Hypatia software (2024–2025).
 
 - Fabio Mogavero, Università degli Studi di Napoli Federico II
-  * Original author and lead designer of the Hypatia environment (2014–2025).
+  * Original author and lead designer of the Hypatia environment (2008–2025).
 
 Past Contributors (with affiliations at the time of their contributions):
 
