@@ -1,6 +1,6 @@
 Hypatia-VSCode - Hypatia Language Support for VSCode
 
-Copyright (C) 2025, the Hypatia Development Team
+Copyright (C) 2025-2026, the Hypatia Development Team
 All rights reserved.
 
 Developed by: Fabio Mogavero & Contributors
