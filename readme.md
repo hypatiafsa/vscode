@@ -1,6 +1,6 @@
 # Hypatia-VSCode
 
-Hypatia language support for VSCode
+Hypatia Language Support for VSCode
 
 ---
 

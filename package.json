@@ -8,10 +8,10 @@
   "homepage": "https://hypatiafsa.github.io/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hypatiafsa/hypatia-vscode"
+    "url": "https://github.com/hypatiafsa/vscode"
   },
   "bugs": {
-    "url": "https://github.com/hypatiafsa/hypatia-vscode/issues"
+    "url": "https://github.com/hypatiafsa/vscode/issues"
   },
   "license": "NCSA",
   "icon": "images/hypatia.png",
