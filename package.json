@@ -21,6 +21,8 @@
   "engines": {
     "vscode": "^1.75.0"
   },
+  "main": "./extension.js",
+  "activationEvents": ["onLanguage:hypatia", "onStartupFinished"],
   "contributes": {
     "languages": [
       {
@@ -53,6 +55,16 @@
       "[hypatia]": {
         "editor.tabSize": 2,
         "editor.insertSpaces": true
+      }
+    },
+    "configuration": {
+      "title": "Hypatia",
+      "properties": {
+        "hypatia.autotheme.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically switch to the Hypatia colour theme when a Hypatia editor is active, and restore the previous theme when leaving."
+        }
       }
     }
   }

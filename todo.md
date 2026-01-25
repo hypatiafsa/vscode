@@ -4,10 +4,7 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## In Progress
 
-- Basic code folding
-  *(Ongoing since 2024.12.29)*.
-- Basic syntax highlighting
-  *(Ongoing since 2024.12.29)*.
+- [ ] No tasks in progress at this time.
 
 ## High Priority
 
@@ -30,5 +27,9 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## Done ✓
 
+- [x] Basic syntax highlighting
+      *(Initiated on 2024.12.29 & completed on 2026.01.25)*.
+- [x] Basic code folding
+      *(Initiated & completed on 2024.12.29)*.
 - [x] Initial project setup
       *(Completed on 2024.12.29)*.

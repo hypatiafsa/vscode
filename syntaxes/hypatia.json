@@ -1,61 +1,69 @@
 {
   "name": "Hypatia",
+  "scopeName": "source.hypatia",
+  "fileTypes": [ "hyp", "hypatia" ],
   "patterns": [
     { "include": "#document" }
   ],
   "repository": {
+
     "document": {
       "patterns": [
-        { "include": "#comment"     },
-        { "include": "#hypatia"     },
-        { "include": "#lingua"      },
-        { "include": "#alphabetum"  },
-        { "include": "#intervalla"  },
-        { "include": "#separatores" },
-        { "include": "#lexicon"     },
-        { "include": "#mutabilia"   },
-        { "include": "#sit"         },
-        { "include": "#principium"  },
-        { "include": "#productum"   },
-        { "include": "#regula"      },
-        { "include": "#derivatio"   },
-        { "include": "#probatio"    },
-        { "include": "#keyword"     },
-        { "include": "#symbol"      },
-        { "include": "#text"        }
+        { "include": "#hypatia" },
+        { "include": "#lingua"  },
+        { "include": "#blob"    }
       ]
     },
-    "comment": {
+    "language": {
       "patterns": [
-        {
-          "name": "comment.hypatia",
-          "match": "--.*"
-        },
-        {
-          "name": "comment.hypatia",
-          "begin": "/-",
-          "end": "-/"
-        }
+        { "include": "#alphabetum" },
+        { "include": "#intervalla" },
+        { "include": "#inclusores" },
+        { "include": "#lexicon"    },
+        { "include": "#mutabilia"  },
+        { "include": "#sit"        },
+        { "include": "#principium" },
+        { "include": "#productum"  },
+        { "include": "#regula"     },
+        { "include": "#derivatio"  },
+        { "include": "#document"   }
       ]
     },
+
     "hypatia": {
       "patterns": [
         {
-          "name": "declaration.hypatia.hypatia",
-          "begin": "(\\$Hypatia|\\$Hp)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?(?=\\$\\:|$))",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"         },
-            "2": { "name": "dialect.hypatia.hypatia" },
-            "3": { "name": "text.hypatia"            }
-          },
-          "end": "(\\$\\:)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Hypatia|Hp))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "text.hypatia",
-              "match": ".+?(?=\\$\\:|$)"
+              "begin": "(\\$(?:Hypatia|Hp))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "dialect.hypatia",
+                  "begin": "Sunya|Sifr|Zero",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                },
+                {
+                  "name": "error.hypatia",
+                  "begin": "(?=\\S)(?!(?:Sunya|Sifr|Zero))",
+                  "end": "(?=\\$\\:)"
+                }
+              ]
+            },
+            {
+              "begin": "(\\$\\:)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "include": "#document" }
+              ]
             }
           ]
         }
@@ -64,43 +72,47 @@
     "lingua": {
       "patterns": [
         {
-          "name": "declaration.lingua.hypatia",
-          "begin": "(\\$Lingua|\\$Ln)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?(?=\\$\\:|$))",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"     },
-            "2": { "name": "name.lingua.hypatia" },
-            "3": { "name": "text.hypatia"        }
-          },
-          "end": "(\\$\\:)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Lingua|Ln))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "text.hypatia",
-              "match": ".+?(?=\\$\\:|$)"
+              "begin": "(\\$(?:Lingua|Ln))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "lingua.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$\\:)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "include": "#language" }
+              ]
             }
           ]
         }
       ]
     },
+
     "alphabetum": {
       "patterns": [
         {
-          "name": "declaration.alphabetum.hypatia",
-          "begin": "(\\$Alphabetum|\\$Al)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(\\$(?:Alphabetum|Al))",
+          "beginCaptures": { "1": { "name": "keyword.hypatia" } },
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
-            {
-              "name": "content.alphabetum.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
-            }
+            { "name": "alphabetum.hypatia", "match": ".+?(?=\\$\\.|$)" }
           ]
         }
       ]
@@ -108,39 +120,26 @@
     "intervalla": {
       "patterns": [
         {
-          "name": "declaration.intervalla.hypatia",
-          "begin": "(\\$Intervalla|\\$In)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(\\$(?:Intervalla|It))",
+          "beginCaptures": { "1": { "name": "keyword.hypatia" } },
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
-            {
-              "name": "content.intervalla.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
-            }
+            { "name": "intervalla.hypatia", "match": ".+?(?=\\$\\.|$)" }
           ]
         }
       ]
     },
-    "separatores": {
+    "inclusores": {
       "patterns": [
         {
-          "name": "declaration.separatores.hypatia",
-          "begin": "(\\$Separatores|\\$Sp)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(\\$(?:Inclusores|Ic))",
+          "beginCaptures": { "1": { "name": "keyword.hypatia" } },
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.separatores.hypatia",
+              "name": "inclusores.hypatia",
               "match": "(?!\\$\\.)(\\S+?(?=\\s|\\$\\.|$))\\s+(?!\\$\\.)(\\S+?(?=\\s|\\$\\.|$))"
             },
             {
@@ -155,19 +154,39 @@
     "lexicon": {
       "patterns": [
         {
-          "name": "declaration.lexicon.hypatia",
-          "begin": "(\\$Lexicon|\\$Lx)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "((?=\\$(?:Lexicon|Lx)))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.lexicon.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
+              "begin": "(\\$(?:Lexicon|Lx))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:post|ps|ante|an|\\.))",
+              "patterns": [
+                { "name": "lexicon.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "[\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "\\$(?!post|ps|ante|an|\\.)" }
+              ]
+            },
+            {
+              "begin": "(\\$(?:post|ps))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:ante|an|\\.))",
+              "patterns": [
+                { "name": "lexicon.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "[\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "\\$(?!ante|an|\\.)" }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ante|an))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "name": "lexicon.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "[\\r\\n]+" },
+                { "name": "lexicon.hypatia", "match": "\\$(?!\\.)" }
+              ]
             }
           ]
         }
@@ -176,41 +195,112 @@
     "mutabilia": {
       "patterns": [
         {
-          "name": "declaration.mutabilia.hypatia",
-          "begin": "(\\$Mutabilia|\\$Mt)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "((?=\\$(?:Mutabilia|Mt)))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.mutabilia.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
+              "begin": "(\\$(?:Mutabilia|Mt))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:post|ps|ante|an|\\.))",
+              "patterns": [
+                { "name": "mutabilia.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "[\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "\\$(?!post|ps|ante|an|\\.)" }
+              ]
+            },
+            {
+              "begin": "(\\$(?:post|ps))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:ante|an|\\.))",
+              "patterns": [
+                { "name": "mutabilia.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "[\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "\\$(?!ante|an|\\.)" }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ante|an))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "name": "mutabilia.hypatia", "match": "[^$\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "[\\r\\n]+" },
+                { "name": "mutabilia.hypatia", "match": "\\$(?!\\.)" }
+              ]
             }
           ]
         }
       ]
     },
+
+    "statement": {
+      "patterns": [
+        { "name": "statement.hypatia", "match": "[^$\\r\\n]+" },
+        { "name": "statement.hypatia", "match": "[\\r\\n]+" },
+        { "name": "statement.hypatia", "match": "\\$(?!(?:ex|per|pr|cum|cm|\\-|\\{|\\}|\\.))" }
+      ]
+    },
+
+    "assertion": {
+      "patterns": [
+        {
+          "begin": "(?=\\$\\{)",
+          "end": "(\\$\\})",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
+          "patterns": [
+            {
+              "begin": "(\\$\\{)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\-)",
+              "patterns": [
+                { "include": "#assertion" }
+              ]
+            },
+            {
+              "begin": "(\\$\\-)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\})",
+              "patterns": [
+                { "include": "#assertion" }
+              ]
+            }
+          ]
+        },
+        { "include": "#statement" }
+      ]
+    },
+
+    "assignments": {
+      "patterns": [
+        {
+          "begin": "(\\$(?:Sit|St|cum|cm|\\,))",
+          "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+          "end": "(?=\\$\\=)",
+          "patterns": [
+            { "name": "mutabilia.hypatia", "match": "(?!\\$)[^\\s\\t$]+" }
+          ]
+        },
+        {
+          "begin": "(\\$\\=)",
+          "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+          "end": "(?=\\$(?:\\,|\\.))",
+          "patterns": [
+            { "name": "string.hypatia", "match": "(?!\\$)[^\\s\\t$]+" }
+          ]
+        }
+      ]
+    },
+
     "sit": {
       "patterns": [
         {
-          "name": "declaration.sit.hypatia",
-          "begin": "(\\$Sit|\\$St)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Sit|St))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
-            {
-              "name": "error.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
-            }
+            { "name": "keyword.hypatia", "match": "(\\$(?:Sit|St))\\s*(?=\\$\\.)" },
+            { "include": "#assignments" }
           ]
         }
       ]
@@ -219,22 +309,32 @@
     "principium": {
       "patterns": [
         {
-          "name": "declaration.principium.hypatia",
-          "begin": "(\\$Principium|\\$Pr)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"        },
-            "2": { "name": "name.sententia.hypatia" },
-            "3": { "name": "text.hypatia"           },
-            "4": { "name": "keyword.hypatia"        }
-          },
+          "begin": "(?=\\$(?:Principium|Pn))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.sententia.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
+              "begin": "(\\$(?:Principium|Pn))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "sententia.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$\\:)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "include": "#statement" }
+              ]
             }
           ]
         }
@@ -243,22 +343,53 @@
     "productum": {
       "patterns": [
         {
-          "name": "declaration.productum.hypatia",
-          "begin": "(\\$Productum|\\$Pd)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"        },
-            "2": { "name": "name.sententia.hypatia" },
-            "3": { "name": "text.hypatia"           },
-            "4": { "name": "keyword.hypatia"        }
-          },
-          "end": "(?=\\$Probatio)|(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Productum|Pd))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.sententia.hypatia",
-              "match": ".+?(?=\\$Probatio|\\$\\.|$)"
+              "begin": "(\\$(?:Productum|Pd))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "sententia.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$\\:)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:ex))",
+              "patterns": [
+                { "include": "#statement" }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ex))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Probatione|Pb))",
+                  "beginCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "end": "(\\$\\.)",
+                  "endCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "patterns": [
+                    { "include": "#productum-proof" }
+                  ]
+                },
+                { "include": "#blob" }
+              ]
             }
           ]
         }
@@ -267,22 +398,46 @@
     "regula": {
       "patterns": [
         {
-          "name": "declaration.regula.hypatia",
-          "begin": "(\\$Regula|\\$Rg)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"    },
-            "2": { "name": "name.ratio.hypatia" },
-            "3": { "name": "text.hypatia"       },
-            "4": { "name": "keyword.hypatia"    }
-          },
+          "begin": "(?=\\$(?:Regula|Rg))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.ratio.hypatia",
-              "match": ".+?(?=\\$\\.|$)"
+              "begin": "(\\$(?:Regula|Rg))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "ratio.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(?=\\$\\:)",
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                {
+                  "begin": "(\\$\\:)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$\\-)",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$\\.)",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -291,50 +446,75 @@
     "derivatio": {
       "patterns": [
         {
-          "name": "declaration.derivatio.hypatia",
-          "begin": "(\\$Derivatio|\\$Dr)\\s*(\\S*?(?=\\s|\\$\\:|$))(.*?)(\\$\\:)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia"    },
-            "2": { "name": "name.ratio.hypatia" },
-            "3": { "name": "text.hypatia"       },
-            "4": { "name": "keyword.hypatia"    }
-          },
-          "end": "(?=\\$Probatio)|(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Derivatio|Dr))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.ratio.hypatia",
-              "match": ".+?(?=\\$Probatio|\\$\\.|$)"
+              "begin": "(\\$(?:Derivatio|Dr))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\:)",
+              "patterns": [
+                {
+                  "name": "ratio.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\:)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(?=\\$\\:)",
+              "end": "(?=\\$(?:ex))",
+              "patterns": [
+                {
+                  "begin": "(\\$\\:)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$\\-)",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:ex))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ex))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Probatione|Pb))",
+                  "beginCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "end": "(\\$\\.)",
+                  "endCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "patterns": [
+                    { "include": "#derivatio-proof" }
+                  ]
+                },
+                { "include": "#blob" }
+              ]
             }
           ]
         }
       ]
     },
 
-    "probatio": {
+    "productum-proof": {
       "patterns": [
-        {
-          "name": "declaration.probatio.hypatia",
-          "begin": "(\\$Probatione|\\$Probatio|\\$Pb)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "patterns": [
-            { "include": "#proof" }
-          ]
-        }
-      ]
-    },
-
-    "proof": {
-      "patterns": [
-        { "include": "#comment"   },
         { "include": "#assumo"    },
         { "include": "#obtineo"   },
         { "include": "#consequor" },
@@ -342,31 +522,82 @@
         { "include": "#divino"    },
         { "include": "#sit"       },
         { "include": "#assero"    },
-        { "include": "#per"       },
-        { "include": "#cum"       },
-        { "include": "#ex"        },
-        { "include": "#probatio"  },
-        { "include": "#symbol"    },
-        { "include": "#text"      }
+        { "include": "#blob"      }
+      ]
+    },
+    "derivatio-proof": {
+      "patterns": [
+        { "include": "#praemitto"       },
+        { "include": "#productum-proof" }
       ]
     },
 
     "assumo": {
       "patterns": [
         {
-          "name": "declaration.assumo.hypatia",
-          "begin": "(\\$Assumo|\\$As)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "end": "(\\$per|\\$pr)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Assumo|Am))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.hypatia",
-              "match": "\\S+"
+              "begin": "(?=\\$(?:Assumo|Am))",
+              "end": "(?=\\$(?:per|pr))",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Assumo|Am))",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:per|pr|\\-))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:per|pr))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$(?:per|pr)\\s*\\$(Principium|Pn|Productum|Pd|Sententiam|Sn))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                {
+                  "name": "sententia.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$\\.)",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$(?:per|pr)\\s*\\$(Regulam|Rg|Derivationem|Dr|Rationem|Rn))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:cum|cm|\\.))",
+              "patterns": [
+                {
+                  "name": "ratio.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$(?:cum|cm|\\.))",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(?=\\$(?:cum|cm))",
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "name": "keyword.hypatia", "match": "(\\$(?:cum|cm))\\s*(?=\\$\\.)" },
+                { "include": "#assignments" }
+              ]
             }
           ]
         }
@@ -375,19 +606,39 @@
     "obtineo": {
       "patterns": [
         {
-          "name": "declaration.obtineo.hypatia",
-          "begin": "(\\$Obtineo|\\$Ob)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "end": "(\\$cum\\$cm)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Obtineo|Ob))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.hypatia",
-              "match": "\\S+"
+              "begin": "(?=\\$(?:Obtineo|Ob))",
+              "end": "(?=\\$(?:cum|cm))",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Obtineo|Ob))",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:cum|cm|\\-))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:cum|cm))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(?=\\$(?:cum|cm))",
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "name": "keyword.hypatia", "match": "(\\$(?:cum|cm))\\s*(?=\\$\\.)" },
+                { "include": "#assignments" }
+              ]
             }
           ]
         }
@@ -396,19 +647,54 @@
     "consequor": {
       "patterns": [
         {
-          "name": "declaration.consequor.hypatia",
-          "begin": "(\\$Consequor|\\$Cn)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "end": "(\\$ex|\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Consequor|Cn))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.hypatia",
-              "match": "\\S+"
+              "begin": "(?=\\$(?:Consequor|Cn))",
+              "end": "(?=\\$(?:ex|\\.))",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Consequor|Cn))",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:ex|\\-|\\.))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:ex|\\.))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ex)\\s*\\$(Regula|Rg|Derivatione|Dr|Ratione|Rn))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:cum|cm|\\.))",
+              "patterns": [
+                {
+                  "name": "ratio.hypatia",
+                  "begin": "\\s*([^\\s$]+)",
+                  "end": "(?=\\$(?:cum|cm|\\.))",
+                  "patterns": [
+                    { "include": "#blob" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(?=\\$(?:cum|cm))",
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                { "name": "keyword.hypatia", "match": "(\\$(?:cum|cm))\\s*(?=\\$\\.)" },
+                { "include": "#assignments" }
+              ]
             }
           ]
         }
@@ -417,19 +703,25 @@
     "reitero": {
       "patterns": [
         {
-          "name": "declaration.reitero.hypatia",
-          "begin": "(\\$Reitero|\\$Rt)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Reitero|Rt))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.hypatia",
-              "match": "\\S+"
+              "begin": "(\\$(?:Reitero|Rt))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:\\-|\\.))",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
+            },
+            {
+              "begin": "(\\$\\-)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
             }
           ]
         }
@@ -438,19 +730,25 @@
     "divino": {
       "patterns": [
         {
-          "name": "declaration.divino.hypatia",
-          "begin": "(\\$Divino|\\$Dv)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "begin": "(?=\\$(?:Divino|Dv))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "content.hypatia",
-              "match": "\\S+"
+              "begin": "(\\$(?:Divino|Dv))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:\\-|\\.))",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
+            },
+            {
+              "begin": "(\\$\\-)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
             }
           ]
         }
@@ -459,114 +757,103 @@
     "assero": {
       "patterns": [
         {
-          "name": "declaration.assero.hypatia",
-          "begin": "(\\$Assero|\\$Ar)",
-          "beginCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "end": "(\\$ex)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
-          "patterns": [
-            {
-              "name": "content.hypatia",
-              "match": "\\S+"
-            }
-          ]
-        }
-      ]
-    },
-
-    "per": {
-      "patterns": [
-        {
-          "name": "declaration.per.hypatia",
-          "match": "(?<=\\$per)\\s*(\\$Principium|\\$Pr|\\$Productum|\\$Pd|\\$Sententiam|\\$Sn)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$\\.)",
-          "captures": {
-            "1": { "name": "keyword.hypatia" },
-            "2": { "name": "name.hypatia"    },
-            "3": { "name": "text.hypatia"    },
-            "4": { "name": "keyword.hypatia" }
-          }
-        },
-        {
-          "name": "declaration.per.hypatia",
-          "match": "(?<=\\$per)\\s*(\\$Regulam|\\$Rg|\\$Derivationem|\\$Dr|\\$Rationem|\\$Rt)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$cum|\\$cm|\\$\\.)",
-          "captures": {
-            "1": { "name": "keyword.hypatia" },
-            "2": { "name": "name.hypatia"    },
-            "3": { "name": "text.hypatia"    },
-            "4": { "name": "keyword.hypatia" }
-          }
-        },
-        {
-          "name": "declaration.per.hypatia",
-          "match": "(?<=\\$per)\\s*(\\$Praemissam|\\$Pm)\\s*(\\$cum|\\$cm|\\$\\.)",
-          "captures": {
-            "1": { "name": "keyword.hypatia" },
-            "2": { "name": "keyword.hypatia" }
-          }
-        }
-      ]
-    },
-    "cum": {
-      "patterns": [
-        {
-          "name": "declaration.cum.hypatia",
-          "begin": "(?<=\\$cum)",
+          "begin": "(?=\\$(?:Assero|Ar))",
           "end": "(\\$\\.)",
-          "endCaptures": {
-            "1": { "name": "keyword.hypatia" }
-          },
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
           "patterns": [
             {
-              "name": "error.hypatia",
-              "match": "\\S+"
+              "begin": "(?=\\$(?:Assero|Ar))",
+              "end": "(?=\\$(?:ex))",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Assero|Ar))",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:ex|\\-))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                },
+                {
+                  "begin": "(\\$\\-)",
+                  "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+                  "end": "(?=\\$(?:ex))",
+                  "patterns" : [
+                    { "include": "#assertion" }
+                  ]
+                }
+              ]
+            },
+            {
+              "begin": "(\\$(?:ex))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns": [
+                {
+                  "begin": "(\\$(?:Probatione|Pb))",
+                  "beginCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "end": "(\\$\\.)",
+                  "endCaptures": {
+                    "1": { "name": "keyword.hypatia" }
+                  },
+                  "patterns": [
+                    { "include": "#productum-proof" },
+                    { "include": "#derivatio-proof" }
+                  ]
+                }
+              ]
             }
           ]
         }
       ]
     },
-    "ex": {
+    "praemitto": {
       "patterns": [
         {
-          "name": "declaration.ex.hypatia",
-          "match": "(?<=\\$ex)\\s*(\\$Regula|\\$Rg|\\$Derivatione|\\$Dr|\\$Ratione|\\$Rt)\\s*(\\S*?(?=\\s|\\$))(.*?)(\\$cum|\\$cm|\\$\\.)",
-          "captures": {
-            "1": { "name": "keyword.hypatia" },
-            "2": { "name": "name.hypatia"    },
-            "3": { "name": "text.hypatia"    },
-            "4": { "name": "keyword.hypatia" }
-          }
+          "begin": "(?=\\$(?:Praemitto|Pm))",
+          "end": "(\\$\\.)",
+          "endCaptures": { "1": { "name": "keyword.hypatia" } },
+          "patterns": [
+            {
+              "begin": "(\\$(?:Praemitto|Pm))",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$(?:\\-|\\.))",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
+            },
+            {
+              "begin": "(\\$\\-)",
+              "beginCaptures": { "1": { "name": "keyword.hypatia" } },
+              "end": "(?=\\$\\.)",
+              "patterns" : [
+                { "include": "#assertion" }
+              ]
+            }
+          ]
         }
       ]
     },
 
-    "keyword": {
+    "blob": {
       "patterns": [
-        {
-          "name": "error.hypatia",
-          "match": "\\$\\.|\\$Vacuum"
-        }
+        { "name": "comment.hypatia", "match": "--.*$" },
+        { "name": "comment.hypatia", "begin": "/-", "end": "-/" },
+        { "name": "blob.hypatia",    "match": "[^$\\r\\n\\-/]+" },
+        { "name": "blob.hypatia",    "match": "/(?!-)" },
+        { "name": "blob.hypatia",    "match": "-(?!-|/)" },
+        { "name": "blob.hypatia",    "match": "[\\r\\n]+" },
+        { "name": "blob.hypatia",    "match": "\\$(?![A-Za-z\\{\\}:\\.,=\\-])" }
       ]
     },
-    "symbol": {
+    "error": {
       "patterns": [
-        {
-          "name": "error.hypatia",
-          "match": "\\\\nihil|\\\\nh|\\\\spatium|\\\\sp|\\\\tabulatio|\\\\tb|\\\\lineanova|\\\\ln|\\\\caputnovum|\\\\cn"
-        }
-      ]
-    },
-    "text": {
-      "patterns": [
-        {
-          "name": "text.hypatia",
-          "match": ".+?"
-        }
+        { "name": "error.hypatia", "match": "[^$\\r\\n]+" },
+        { "name": "error.hypatia", "match": "[\\r\\n]+" },
+        { "name": "error.hypatia", "match": "\\$(?![A-Za-z\\{\\}:\\.,=\\-])" }
       ]
     }
-  },
-  "scopeName": "source.hypatia"
+
+  }
 }
