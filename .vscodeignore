@@ -1,0 +1,13 @@
+.git/**
+.github/**
+.vscode/**
+.gitignore
+.gitattributes
+.markdownlint.json
+.editorconfig
+scripts/**
+src/**
+test/**
+build.sh
+tsconfig*.json
+*.tsbuildinfo
