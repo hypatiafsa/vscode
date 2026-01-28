@@ -22,7 +22,10 @@
     "vscode": "^1.75.0"
   },
   "main": "./extension.js",
-  "activationEvents": ["onLanguage:hypatia", "onStartupFinished"],
+  "activationEvents": [
+    "onLanguage:hypatia",
+    "onStartupFinished"
+  ],
   "contributes": {
     "languages": [
       {
@@ -46,9 +49,14 @@
     ],
     "themes": [
       {
-        "label": "hypatia",
+        "label": "Hypatia Light",
+        "uiTheme": "vs",
+        "path": "./themes/hypatia-light.json"
+      },
+      {
+        "label": "Hypatia Dark",
         "uiTheme": "vs-dark",
-        "path": "./themes/hypatia.json"
+        "path": "./themes/hypatia-dark.json"
       }
     ],
     "configurationDefaults": {
@@ -60,10 +68,39 @@
     "configuration": {
       "title": "Hypatia",
       "properties": {
-        "hypatia.autotheme.enabled": {
+        "hypatia.autotheme.autoswitch": {
           "type": "boolean",
+          "scope": "window",
+          "default": false,
+          "description": "Automatically switch the whole VSCode colour theme while a Hypatia file is active, and restore the previous theme when leaving."
+        },
+        "hypatia.autotokens.autoapply": {
+          "type": "boolean",
+          "scope": "window",
           "default": true,
-          "description": "Automatically switch to the Hypatia colour theme when a Hypatia editor is active, and restore the previous theme when leaving."
+          "description": "Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous editor token customisations when leaving."
+        },
+        "hypatia.autotokens.mode": {
+          "type": "string",
+          "scope": "window",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "dark",
+            "light"
+          ],
+          "description": "Hypatia token palette to use; 'auto' follows the current VSCode theme kind (dark/light)."
+        },
+        "hypatia.semantichighlighting.mode": {
+          "type": "string",
+          "scope": "window",
+          "default": "inherit",
+          "enum": [
+            "on",
+            "off",
+            "inherit"
+          ],
+          "description": "Override the semantic highlighting flag while a Hypatia file is active; 'inherit' leaves the user's setting unchanged."
         }
       }
     }

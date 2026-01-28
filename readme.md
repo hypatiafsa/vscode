@@ -22,16 +22,20 @@ Hypatia Language Support for VSCode
 Its goal is to make Hypatia documents pleasant to read and write by offering
 sensible defaults and language-aware editor behaviour.
 
-This extension ships with an optional bundled colour theme.
-When enabled, it can automatically switch to the Hypatia theme while a Hypatia
-file is active and restore your previous theme when you switch to another file
-type.
-This behaviour can be toggled via the `hypatia.autotheme.enabled` setting
+This extension includes bundled dark and light colour themes.
+It can also apply Hypatia-specific token colours without changing the user's
+global VSCode theme.
+
+By default, the extension automatically applies Hypatia token colours while a
+Hypatia file is active and restores the previous settings when switching to a
+different file type.
+This behaviour is controlled by the `hypatia.autotokens.autoapply` setting
 (default: `true`).
 
-> Note: VSCode themes are window-wide (not per tab).
-> While a Hypatia file is active, the Hypatia theme applies to the whole window;
-> when you leave Hypatia, the extension restores the previously active theme.
+Optionally, automatic switching of the whole VSCode colour theme can be enabled
+while a Hypatia file is active.
+This behaviour is controlled by the `hypatia.autotheme.autoswitch` setting
+(default: `false`).
 
 ---
 

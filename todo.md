@@ -27,8 +27,8 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## Done ✓
 
-- [x] Basic syntax highlighting
-      *(Initiated on 2024.12.29 & completed on 2026.01.25)*.
+- [x] Basic syntax highlighting with light/dark themes
+      *(Initiated on 2024.12.29 & completed on 2026.01.28)*.
 - [x] Basic code folding
       *(Initiated & completed on 2024.12.29)*.
 - [x] Initial project setup
