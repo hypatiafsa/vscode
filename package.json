@@ -8,19 +8,24 @@
   "homepage": "https://hypatiafsa.github.io/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hypatiafsa/hypatia-vscode"
+    "url": "https://github.com/hypatiafsa/vscode"
   },
   "bugs": {
-    "url": "https://github.com/hypatiafsa/hypatia-vscode/issues"
+    "url": "https://github.com/hypatiafsa/vscode/issues"
   },
   "license": "NCSA",
-  "icon": "...",
+  "icon": "images/hypatia.png",
   "categories": [
     "Programming Languages"
   ],
   "engines": {
     "vscode": "^1.75.0"
   },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:hypatia",
+    "onStartupFinished"
+  ],
   "contributes": {
     "languages": [
       {
@@ -42,10 +47,62 @@
         "path": "./syntaxes/hypatia.json"
       }
     ],
+    "themes": [
+      {
+        "label": "Hypatia Light",
+        "uiTheme": "vs",
+        "path": "./themes/hypatia-light.json"
+      },
+      {
+        "label": "Hypatia Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/hypatia-dark.json"
+      }
+    ],
     "configurationDefaults": {
       "[hypatia]": {
-        "editor.tabSize": 2,
-        "editor.insertSpaces": true
+        "editor.indentSize": "tabSize",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+      }
+    },
+    "configuration": {
+      "title": "Hypatia",
+      "properties": {
+        "hypatia.autotheme.autoswitch": {
+          "type": "boolean",
+          "scope": "window",
+          "default": false,
+          "description": "Automatically switch the whole VSCode colour theme while a Hypatia file is active, and restore the previous theme when leaving."
+        },
+        "hypatia.autotokens.autoapply": {
+          "type": "boolean",
+          "scope": "window",
+          "default": true,
+          "description": "Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous editor token customisations when leaving."
+        },
+        "hypatia.autotokens.mode": {
+          "type": "string",
+          "scope": "window",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "dark",
+            "light"
+          ],
+          "description": "Hypatia token palette to use; 'auto' follows the current VSCode theme kind (dark/light)."
+        },
+        "hypatia.semantichighlighting.mode": {
+          "type": "string",
+          "scope": "window",
+          "default": "inherit",
+          "enum": [
+            "on",
+            "off",
+            "inherit"
+          ],
+          "description": "Override the semantic highlighting flag while a Hypatia file is active; 'inherit' leaves the user's setting unchanged."
+        }
       }
     }
   }

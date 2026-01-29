@@ -1,0 +1,24 @@
+# Line endings
+* text=auto eol=lf
+
+# Config & Workflow
+*.json text linguist-language=JSON
+*.toml text linguist-language=TOML
+*.yaml text linguist-language=YAML
+*.yml  text linguist-language=YAML
+
+# Textual Documents
+*.md   text diff=markdown linguist-language=Markdown
+*.tex  text diff=tex      linguist-language=TeX
+*.txt  text               linguist-language=Text
+
+# Textual Images
+*.svg  text linguist-language=SVG
+
+# Binary Images
+*.eps  binary
+*.gif  binary
+*.ico  binary
+*.jpg  binary
+*.jpeg binary
+*.png  binary
