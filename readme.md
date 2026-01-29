@@ -13,6 +13,7 @@ Hypatia Language Support for VSCode
 5. [**To Do**](#to-do)
 6. [**Support**](#support)
 7. [**Contributing**](#contributing)
+8. [**Contributors**](#contributors)
 
 ---
 
@@ -22,7 +23,7 @@ Hypatia Language Support for VSCode
 Its goal is to make Hypatia documents pleasant to read and write by offering
 sensible defaults and language-aware editor behaviour.
 
-This extension includes bundled dark and light colour themes.
+This extension includes bundled light and dark colour themes.
 It can also apply Hypatia-specific token colours without changing the user's
 global VSCode theme.
 
@@ -105,3 +106,10 @@ If you would like to contribute, please read the
 check both the [repository](./todo.md) and
 [organisation](../../../.github/blob/master/todo.md) to do files for planned
 tasks.
+
+---
+
+## Contributors
+
+For the list of contributors, please refer to the
+[Contributors](./contributors.txt) file.

@@ -203,7 +203,7 @@
     },
     {
       "scope": "string.hypatia",
-      "settings": { "foreground": "#A00505", "fontStyle": "italic" }
+      "settings": { "foreground": "#A05000", "fontStyle": "italic" }
     },
     {
       "scope": "comment.hypatia",
@@ -215,7 +215,7 @@
     },
     {
       "scope": "error.hypatia",
-      "settings": { "foreground": "#AA0000", "fontStyle": "bold italic" }
+      "settings": { "foreground": "#AA0000", "fontStyle": "italic" }
     }
 
   ]
