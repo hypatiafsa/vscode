@@ -1,10 +1,11 @@
 {
+  "type": "module",
   "name": "hypatia",
   "displayName": "Hypatia",
   "description": "Hypatia language support for VSCode",
   "author": "hypatiadevteam",
   "publisher": "hypatiafsa",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://hypatiafsa.github.io/",
   "repository": {
     "type": "git",
@@ -19,11 +20,10 @@
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.100.0"
   },
   "main": "./extension.js",
   "activationEvents": [
-    "onLanguage:hypatia",
     "onStartupFinished"
   ],
   "contributes": {
@@ -69,30 +69,25 @@
     "configuration": {
       "title": "Hypatia",
       "properties": {
-        "hypatia.autotheme.autoswitch": {
+        "hypatia.autotheme": {
           "type": "boolean",
           "scope": "window",
           "default": false,
           "description": "Automatically switch the whole VSCode colour theme while a Hypatia file is active, and restore the previous theme when leaving."
         },
-        "hypatia.autotokens.autoapply": {
-          "type": "boolean",
-          "scope": "window",
-          "default": true,
-          "description": "Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous editor token customisations when leaving."
-        },
-        "hypatia.autotokens.mode": {
+        "hypatia.autotokens": {
           "type": "string",
           "scope": "window",
           "default": "auto",
           "enum": [
+            "off",
             "auto",
             "dark",
             "light"
           ],
-          "description": "Hypatia token palette to use; 'auto' follows the current VSCode theme kind (dark/light)."
+          "description": "Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous editor token customisations when leaving; 'auto' follows the current VSCode theme kind (light/dark)."
         },
-        "hypatia.semantichighlighting.mode": {
+        "hypatia.semantichighlighting": {
           "type": "string",
           "scope": "window",
           "default": "inherit",
