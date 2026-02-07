@@ -27,7 +27,9 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 
 ## Done ✓
 
-- [x] First public release published
+- [x] 2nd public release published
+      *(Done on 2026.02.07)*.
+- [x] 1st public release published
       *(Done on 2026.01.29)*.
 - [x] Basic syntax highlighting with light/dark themes
       *(Initiated on 2024.12.29 & completed on 2026.01.28)*.
