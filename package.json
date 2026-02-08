@@ -5,7 +5,7 @@
   "description": "Hypatia language support for VSCode",
   "author": "hypatiadevteam",
   "publisher": "hypatiafsa",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://hypatiafsa.github.io/",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "engines": {
     "vscode": "^1.100.0"
   },
-  "main": "./extension.js",
+  "main": "./sources/extension.js",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -66,37 +66,107 @@
         "editor.tabSize": 2
       }
     },
+    "commands": [
+      {
+        "command": "hypatia.hls.server",
+        "title": "Manage HLS"
+      },
+      {
+        "command": "hypatia.hls.restart",
+        "title": "Restart HLS"
+      },
+      {
+        "command": "hypatia.hls.validate",
+        "title": "Validate Current Editor"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "hypatia.hls.server"
+        },
+        {
+          "command": "hypatia.hls.restart",
+          "when": "editorLangId == hypatia"
+        },
+        {
+          "command": "hypatia.hls.validate",
+          "when": "editorLangId == hypatia"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "hypatia.hls.restart",
+        "key": "ctrl+k ctrl+enter",
+        "when": "editorTextFocus && editorLangId == hypatia"
+      },
+      {
+        "command": "hypatia.hls.validate",
+        "key": "ctrl+k ctrl+v",
+        "when": "editorTextFocus && editorLangId == hypatia"
+      }
+    ],
     "configuration": {
       "title": "Hypatia",
       "properties": {
-        "hypatia.autotheme": {
+        "hypatia.hls.enabled": {
+          "type": "boolean",
+          "scope": "window",
+          "default": true,
+          "description": "HLS: Enable Hypatia Language Server."
+        },
+        "hypatia.hls.path": {
+          "type": "string",
+          "scope": "window",
+          "default": "",
+          "description": "HLS: Path to the HLS executable."
+        },
+        "hypatia.hls.args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "scope": "window",
+          "default": [],
+          "description": "HLS: Arguments passed to the HLS executable."
+        },
+        "hypatia.hls.trace": {
+          "type": "string",
+          "scope": "window",
+          "default": "off",
+          "enum": ["off", "messages", "verbose"],
+          "description": "HLS: Trace LSP client/server messages to the HLS output channel."
+        },
+        "hypatia.hls.shutdowndelay": {
+          "type": "number",
+          "scope": "window",
+          "default": 5000,
+          "description": "HLS: How long (ms) to keep the HLS running after the last Hypatia editor is closed."
+        },
+        "hypatia.style.autotheme": {
           "type": "boolean",
           "scope": "window",
           "default": false,
-          "description": "Automatically switch the whole VSCode colour theme while a Hypatia file is active, and restore the previous theme when leaving."
+          "description": "Style: Automatically switch the whole VSCode colour theme while a Hypatia editor is active, and restore the previous theme when leaving."
         },
-        "hypatia.autotokens": {
+        "hypatia.style.autotokens": {
           "type": "string",
           "scope": "window",
           "default": "auto",
-          "enum": [
-            "off",
-            "auto",
-            "dark",
-            "light"
-          ],
-          "description": "Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous editor token customisations when leaving; 'auto' follows the current VSCode theme kind (light/dark)."
+          "enum": [ "off", "auto", "dark", "light" ],
+          "description": "Style: Automatically apply Hypatia token colours only while a Hypatia editor is active, and restore the previous token customisations when leaving; 'auto' follows the current VSCode theme kind (light/dark)."
         },
-        "hypatia.semantichighlighting": {
+        "hypatia.style.semantichighlighting": {
           "type": "string",
           "scope": "window",
           "default": "inherit",
-          "enum": [
-            "on",
-            "off",
-            "inherit"
-          ],
-          "description": "Override the semantic highlighting flag while a Hypatia file is active; 'inherit' leaves the user's setting unchanged."
+          "enum": [ "on", "off", "inherit" ],
+          "description": "Style: Override the semantic highlighting flag while a Hypatia editor is active; 'inherit' leaves the user's setting unchanged."
+        },
+        "hypatia.style.trace": {
+          "type": "boolean",
+          "scope": "window",
+          "default": false,
+          "description": "Style: Write debug information about style automation (theme/tokens/highlighting) to the Style output channel."
         }
       }
     }

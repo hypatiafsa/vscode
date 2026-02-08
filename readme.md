@@ -30,12 +30,12 @@ global VSCode theme.
 By default, the extension automatically applies Hypatia token colours while a
 Hypatia file is active and restores the previous settings when switching to a
 different file type.
-This behaviour is controlled by the `hypatia.autotokens` setting (default:
+This behaviour is controlled by the `hypatia.style.autotokens` setting (default:
 `auto`).
 
 Optionally, automatic switching of the whole VSCode colour theme can be enabled
 while a Hypatia file is active.
-This behaviour is controlled by the `hypatia.autotheme` setting (default:
+This behaviour is controlled by the `hypatia.style.autotheme` setting (default:
 `false`).
 
 ---

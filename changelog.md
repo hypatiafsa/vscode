@@ -2,13 +2,27 @@
 
 List of notable changes to the Hypatia-VSCode language-support extension.
 
-## [Unreleased] [*2026.MM.DD*]
+## [Unreleased] [*2026.02.08*]
 
 [unreleased]: https://github.com/hypatiafsa/vscode/tree/dev
 
 Development version, not yet released to the public.
 
-## [0.0.1] [*2026.02.DD*]
+### Added
+
+- First client draft for the Hypatia Language Server.
+
+## [0.0.2] [*2026.02.08*]
+
+[0.0.2]: https://github.com/hypatiafsa/vscode/releases/tag/v0.0.2
+
+3rd public release
+
+### Changed
+
+- Refactored sources in preparation for the Hypatia Language Server integration.
+
+## [0.0.1] [*2026.02.07*]
 
 [0.0.1]: https://github.com/hypatiafsa/vscode/releases/tag/v0.0.1
 
