@@ -5,7 +5,7 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 ## In Progress
 
 - Implementation of Hypatia LSP plugin
-  *(Ongoing since 2024.02.08)*.
+  *(Ongoing since 2024.02.10)*.
 
 ## High Priority
 
@@ -29,7 +29,7 @@ List of tasks to be completed for the Hypatia-VSCode language-support extension.
 ## Done ✓
 
 - [x] 3rd public release published (v0.0.2)
-      *(Done on 2026.02.08)*.
+      *(Done on 2026.02.10)*.
 - [x] 2nd public release published (v0.0.1)
       *(Done on 2026.02.07)*.
 - [x] 1st public release published (v0.0.0)
