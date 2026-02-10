@@ -605,6 +605,8 @@ async function restoreSemanticOverride(context, switchingRef, trace, scope) {
  * @param {{value: boolean}} lastWasHypatiaRef - Reference for previous state.
  * @param {Object} reasonsRef - Object containing reasons for reconciliation.
  * @param {Object | undefined} trace - Tracer object for logging.
+ * @param {Object | undefined} leaveRef - Reference to the leave
+ * scheduling/cancellation mechanism.
  */
 async function reconcile(context, editor, switchingRef, lastWasHypatiaRef, reasonsRef, trace, leaveRef) {
 
