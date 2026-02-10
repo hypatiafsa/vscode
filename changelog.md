@@ -23,6 +23,10 @@ Development version, not yet released to the public.
 - Refactored codebase in preparation for Hypatia Language Server integration.
 - Added code documentation for improved readability and maintainability.
 
+### Fixed
+
+- Fixed a regression in switching between Hypatia editors.
+
 ## [0.0.1] [*2026.02.07*]
 
 [0.0.1]: https://github.com/hypatiafsa/vscode/releases/tag/v0.0.1
@@ -33,7 +37,10 @@ Development version, not yet released to the public.
 
 - Migrated from CommonJS to ES Modules for better standard compliance.
 - Refactored `extension.js` code to be more modular and maintainable.
-- Fixed minor bugs in the restoration of original settings.
+
+### Fixed
+
+- Fixed minor bugs in the restoration of the editor original settings.
 
 ## [0.0.0] [*2026.01.29*]
 
