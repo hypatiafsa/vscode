@@ -257,7 +257,8 @@ async function setWorkbenchTheme(themeLabel, switchingRef, target, scope) {
 }
 
 /**
- * Applies the whole theme if enabled.
+ * Applies the whole theme if enabled and the required variant/state is
+ * different from the applied one.
  * @param {vscode.ExtensionContext} context - Extension context.
  * @param {{value: boolean}} switchingRef - Reference for update status.
  * @param {Object | undefined} trace - Tracer object for logging.
@@ -265,63 +266,69 @@ async function setWorkbenchTheme(themeLabel, switchingRef, target, scope) {
  */
 async function applyWholeTheme(context, switchingRef, trace, scope) {
 
-  if (!getAutoThemeEnabled(scope)) {
-    // Se autotheme è disabilitato, non applichiamo nulla e resettiamo lo stato locale per questo scope.
-    const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
-    const appliedScope = gsGet(context, STATE.autotheme.appliedScope);
+  const isEnabled = getAutoThemeEnabled(scope);
+  const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
+  const appliedScope = gsGet(context, STATE.autotheme.appliedScope);
+  if (!isEnabled) {
+    const wb = cfg.cfg("workbench", scope);
+    const currentVscodeTheme = wb.get("colorTheme");
     if (appliedLabel && appliedScope === scope) {
+      const savedTheme = gsGet(context, STATE.autotheme.savedTheme);
+      const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotheme.target));
+      const target = storedTarget ?? cfg.pickTargetForKey("workbench", "colorTheme", scope);
+      if (currentVscodeTheme === appliedLabel && savedTheme) {
+        await setWorkbenchTheme(savedTheme, switchingRef, target, scope);
+        trace?.line(`autotheme: disabled, restored ${ savedTheme } in scope ${ scope || 'global' }`);
+      }
       await gsSet(context, STATE.autotheme.appliedThemeLabel, undefined);
       await gsSet(context, STATE.autotheme.appliedScope, undefined);
-      trace?.line(`autotheme: disabled, cleared state for scope ${ scope || 'global' }`);
+      await gsSet(context, STATE.autotheme.applied, false);
     }
     return;
   }
 
   const desiredVariant = resolveVariant(scope);
-  const desired = themeLabelForVariant(desiredVariant);
-
-  // Leggi lo stato attualmente applicato dallo storage
-  const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
-  const appliedScope = gsGet(context, STATE.autotheme.appliedScope); // Potrebbe essere undefined se applicato globalmente
-
-  // Controlla se lo stato richiesto è già applicato nello stesso scope
-  if (appliedLabel === desired && appliedScope === scope) {
-    trace?.line(`autotheme: no change needed for theme '${ desired }' in scope ${ scope || 'global' }`);
-    return; // Stato già corretto, esci senza fare nulla
+  const desiredThemeLabel = themeLabelForVariant(desiredVariant);
+  if (appliedLabel === desiredThemeLabel && appliedScope === scope) {
+    trace?.line(`autotheme: no change needed for theme '${ desiredThemeLabel }' in scope ${ scope || 'global' }`);
+    return;
   }
 
   const wb = cfg.cfg("workbench", scope);
-  const current = wb.get("colorTheme");
-  if (typeof current !== "string" || current.length === 0) return;
-
-  const currentIsHypatia = current === THEME_LABEL_DARK || current === THEME_LABEL_LIGHT;
+  const currentVscodeTheme = wb.get("colorTheme");
+  if (typeof currentVscodeTheme !== "string" || currentVscodeTheme.length === 0) return;
+  const currentIsHypatia = currentVscodeTheme === THEME_LABEL_DARK || currentVscodeTheme === THEME_LABEL_LIGHT;
   const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotheme.target));
   const target = storedTarget ?? cfg.pickTargetForKey("workbench", "colorTheme", scope);
 
   if (!currentIsHypatia) {
-    await gsSet(context, STATE.autotheme.savedTheme, current);
-    await setWorkbenchTheme(desired, switchingRef, target, scope);
+    await gsSet(context, STATE.autotheme.savedTheme, currentVscodeTheme);
+    await setWorkbenchTheme(desiredThemeLabel, switchingRef, target, scope);
     await gsSet(context, STATE.autotheme.applied, true);
     await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
-    // Aggiorna lo stato applicato
-    await gsSet(context, STATE.autotheme.appliedThemeLabel, desired);
+    await gsSet(context, STATE.autotheme.appliedThemeLabel, desiredThemeLabel);
     await gsSet(context, STATE.autotheme.appliedScope, scope);
-    trace?.line(`autotheme: switched to ${ desired } in scope ${ scope || 'global' } (saved ${ current })`);
+    trace?.line(`autotheme: switched to ${ desiredThemeLabel } in scope ${ scope || 'global' } (saved ${ currentVscodeTheme })`);
     return;
   }
 
-  if (current !== desired) {
-    await setWorkbenchTheme(desired, switchingRef, target, scope);
-    // Aggiorna lo stato applicato
-    await gsSet(context, STATE.autotheme.appliedThemeLabel, desired);
+  if (currentVscodeTheme !== desiredThemeLabel) {
+    await setWorkbenchTheme(desiredThemeLabel, switchingRef, target, scope);
+    await gsSet(context, STATE.autotheme.appliedThemeLabel, desiredThemeLabel);
     await gsSet(context, STATE.autotheme.appliedScope, scope);
-    trace?.line(`autotheme: adjusted to ${ desired } in scope ${ scope || 'global' }`);
+    trace?.line(`autotheme: adjusted to ${ desiredThemeLabel } in scope ${ scope || 'global' }`);
   } else {
-    // Se il tema corrente è già quello giusto, aggiorna comunque lo stato locale
-    await gsSet(context, STATE.autotheme.appliedThemeLabel, desired);
-    await gsSet(context, STATE.autotheme.appliedScope, scope);
-    trace?.line(`autotheme: theme ${ desired } already active in scope ${ scope || 'global' }, state synced`);
+    if (appliedLabel !== desiredThemeLabel || appliedScope !== scope) {
+      await gsSet(context, STATE.autotheme.appliedThemeLabel, desiredThemeLabel);
+      await gsSet(context, STATE.autotheme.appliedScope, scope);
+      if (!gsGet(context, STATE.autotheme.applied, false)) {
+        await gsSet(context, STATE.autotheme.applied, true);
+        await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
+      }
+      trace?.line(`autotheme: theme ${ desiredThemeLabel } already active in scope ${ scope || 'global' }, state synced`);
+    }
   }
+
   if (!storedTarget && gsGet(context, STATE.autotheme.applied, false) === true) {
     await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
   }
@@ -339,47 +346,51 @@ async function restoreWholeTheme(context, switchingRef, trace, scope) {
 
   const autoApplied = gsGet(context, STATE.autotheme.applied, false) === true;
   if (!autoApplied) {
-    // Se non è stato applicato automaticamente, non facciamo nulla qui.
+    const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
+    const appliedScope = gsGet(context, STATE.autotheme.appliedScope);
+    if (appliedLabel && appliedScope === scope) {
+      await gsSet(context, STATE.autotheme.appliedThemeLabel, undefined);
+      await gsSet(context, STATE.autotheme.appliedScope, undefined);
+      trace?.line(`autotheme: not marked as auto-applied, cleared local state for scope ${ scope || 'global' }`);
+    }
     return;
   }
 
-  // Leggi lo stato attualmente applicato dallo storage
   const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
   const appliedScope = gsGet(context, STATE.autotheme.appliedScope);
 
-  // Controlla se qualcosa è effettivamente applicato nello scope corrente
   if (appliedLabel === undefined || appliedScope !== scope) {
     trace?.line(`autotheme: nothing to restore in scope ${ scope || 'global' }`);
-    // Pulisci comunque lo stato locale per questo scope se necessario
     if (appliedScope === scope) {
-      await gsSet(context, STATE.autotheme.appliedLabel, undefined);
+      await gsSet(context, STATE.autotheme.appliedThemeLabel, undefined);
       await gsSet(context, STATE.autotheme.appliedScope, undefined);
     }
     return;
   }
 
   const wb = cfg.cfg("workbench", scope);
-  const current = wb.get("colorTheme");
-  const saved = gsGet(context, STATE.autotheme.savedTheme);
+  const currentVscodeTheme = wb.get("colorTheme");
+  const savedTheme = gsGet(context, STATE.autotheme.savedTheme);
   const target =
     cfg.parseTarget(gsGet(context, STATE.autotheme.target)) ??
     cfg.pickTargetForKey("workbench", "colorTheme", scope);
 
   try {
-    if (
-      typeof current === "string" &&
-      (current === THEME_LABEL_DARK || current === THEME_LABEL_LIGHT) &&
-      typeof saved === "string" && saved.length > 0
-    ) {
-      await setWorkbenchTheme(saved, switchingRef, target, scope);
-      trace?.line(`autotheme: restored ${ saved } in scope ${ scope || 'global' }`);
+    if (currentVscodeTheme === appliedLabel && typeof savedTheme === "string" && savedTheme.length > 0) {
+      await setWorkbenchTheme(savedTheme, switchingRef, target, scope);
+      trace?.line(`autotheme: restored ${ savedTheme } in scope ${ scope || 'global' }`);
     } else {
-      trace?.line(`autotheme: current theme (${ current }) is not a Hypatia theme or saved theme is missing, clearing applied state in scope ${ scope || 'global' }`);
+      trace?.line(
+        `autotheme: current theme in VSCode (${ currentVscodeTheme }) does not match the theme we applied (${ appliedLabel }), ` +
+        `or saved theme is missing. Not restoring. Cleared our applied state for scope ${ scope || 'global' }.`
+      );
     }
   } finally {
-    // Pulisci sempre lo stato applicato dopo il tentativo di ripristino
     await gsSet(context, STATE.autotheme.appliedThemeLabel, undefined);
     await gsSet(context, STATE.autotheme.appliedScope, undefined);
+    await gsSet(context, STATE.autotheme.applied, false);
+    await gsSet(context, STATE.autotheme.savedTheme, undefined);
+    await gsSet(context, STATE.autotheme.target, undefined);
   }
 
 }
