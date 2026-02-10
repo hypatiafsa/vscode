@@ -11,14 +11,22 @@
 
 /* Begin of file extension.js */
 
-import { activateStyle } from "./sources/style.js";
-
 import utils from "./sources/utils.js";
+
+import { activateStyle } from "./sources/style.js";
 
 /*----------------------------------------------------------------------------*/
 
 let styleHandle = undefined;
 
+/**
+ * Activates the extension and initialises all language support features.
+ *
+ * @param {vscode.ExtensionContext} context - The extension context provided by
+ * VSCode, used to manage subscriptions and resources
+ * @returns {void}
+ * @throws {Error} Errors are caught and logged via utils.logError()
+ */
 export function activate(context) {
   try {
     styleHandle = activateStyle(context);
@@ -28,6 +36,13 @@ export function activate(context) {
   }
 }
 
+/**
+ * Deactivates the extension and cleans up resources.
+ *
+ * @returns {Promise<void>|undefined} A Promise if async disposal is performed,
+ * undefined otherwise.
+ * @throws {Error} Errors are caught and logged via utils.logError()
+ */
 export function deactivate() {
   if (!styleHandle) return undefined;
   const hnd = styleHandle;

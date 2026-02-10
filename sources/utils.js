@@ -9,12 +9,28 @@
 --                                                                            --
 ------------------------------------------------------------------------------*/
 
+/**
+ * Utility module for Hypatia VSCode extension.
+ *
+ * Provides comprehensive helper functions organized into categories:
+ * - Configuration management (getting, inspecting, updating settings);
+ * - GlobalState operations (reading/writing extension state);
+ * - Editor helpers (document type, theme detection);
+ * - Output logging (console logging, output channels with conditional tracing);
+ * - General utilities (enum normalization, object validation, rule filtering,
+ *   serial task queue).
+ *
+ * @module utils
+ * @requires vscode
+ * @requires node:util
+ */
+
 /* Begin of file utils.js */
 
 import * as vscode from "vscode";
 import { isDeepStrictEqual } from "node:util";
 
-const { workspace, window, ColorThemeKind, ConfigurationTarget } = vscode;
+const { workspace, window, ColorThemeKind, ConfigurationTarget, Uri } = vscode;
 
 // Configuration helpers -------------------------------------------------------
 
@@ -28,6 +44,24 @@ const { workspace, window, ColorThemeKind, ConfigurationTarget } = vscode;
  */
 function cfg(section, scope) {
   return workspace.getConfiguration(section, scope);
+}
+
+/**
+ * Produces a stable, JSON-serializable key for a configuration scope. Converts
+ * Uri objects and scope objects with Uri properties to their string
+ * representation for consistent comparison and storage.
+ * @param {vscode.ConfigurationScope | null | undefined} scope - The
+ * configuration scope to convert.
+ * @returns {string | undefined} A stable string key, or undefined if scope is
+ * null/undefined.
+ */
+function stableScopeKey(scope) {
+  if (!scope) return undefined;
+  try {
+    if (scope instanceof Uri) return scope.toString();
+    if (typeof scope === "object" && scope.uri instanceof Uri) return scope.uri.toString();
+  } catch { }
+  return String(scope);
 }
 
 /**
@@ -334,7 +368,7 @@ function createSerialQueue(onError = (e) => logError(e, "hypatia")) {
 
 export default {
 
-  cfg, inspectKey, valueAtTarget, parseTarget, pickTargetForKey,
+  cfg, stableScopeKey, inspectKey, valueAtTarget, parseTarget, pickTargetForKey,
   serialiseTarget, updateSetting,
 
   gsGet, gsSet,

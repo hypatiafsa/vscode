@@ -103,20 +103,6 @@ const gsGet = (ctx, k, d) => utils.gsGet(ctx, k, d);
  */
 const gsSet = (ctx, k, v) => utils.gsSet(ctx, k, v);
 
-/**
- * Produces a stable, JSON-serialisable key for a configuration scope.
- * @param {vscode.ConfigurationScope | null | undefined} scope
- * @returns {string | undefined}
- */
-function stableScopeKey(scope) {
-  if (!scope) return undefined;
-  try {
-    if (scope instanceof vscode.Uri) return scope.toString();
-    if (typeof scope === "object" && scope.uri instanceof vscode.Uri) return scope.uri.toString();
-  } catch { }
-  return String(scope);
-}
-
 /*----------------------------------------------------------------------------*/
 
 /**
@@ -280,7 +266,7 @@ async function setWorkbenchTheme(themeLabel, switchingRef, target, scope) {
  */
 async function applyWholeTheme(context, switchingRef, trace, scope) {
 
-  const scopeKey = stableScopeKey(scope);
+  const scopeKey = utils.stableScopeKey(scope);
   const isEnabled = getAutoThemeEnabled(scope);
   const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
   const appliedScopeKey = gsGet(context, STATE.autotheme.appliedScope);
@@ -348,7 +334,7 @@ async function applyWholeTheme(context, switchingRef, trace, scope) {
  */
 async function restoreWholeTheme(context, switchingRef, trace, scope) {
 
-  const scopeKey = stableScopeKey(scope);
+  const scopeKey = utils.stableScopeKey(scope);
   const autoApplied = gsGet(context, STATE.autotheme.applied, false) === true;
   if (!autoApplied) {
     const appliedLabel = gsGet(context, STATE.autotheme.appliedThemeLabel);
@@ -409,7 +395,7 @@ async function restoreWholeTheme(context, switchingRef, trace, scope) {
  */
 async function applyTokenOverlay(context, switchingRef, trace, scope) {
 
-  const scopeKey = stableScopeKey(scope);
+  const scopeKey = utils.stableScopeKey(scope);
   const editorCfg = utils.cfg("editor", scope);
   const rawCurrent = editorCfg.get("tokenColorCustomizations");
   const current = utils.asPlainObject(rawCurrent, {});
@@ -506,6 +492,7 @@ async function restoreTokenOverlay(context, switchingRef, trace, scope) {
  */
 async function applySemanticOverride(context, switchingRef, trace, scope) {
 
+  const scopeKey = utils.stableScopeKey(scope);
   const mode = getSemanticMode(scope);
   if (mode === "inherit") {
     if (gsGet(context, STATE.semantic.applied, false) === true) {
@@ -513,7 +500,7 @@ async function applySemanticOverride(context, switchingRef, trace, scope) {
     } else {
       const appliedValue = gsGet(context, STATE.semantic.appliedValue);
       const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
-      if (appliedValue !== undefined && appliedScopeKey === stableScopeKey(scope)) {
+      if (appliedValue !== undefined && appliedScopeKey === scopeKey) {
         await gsSet(context, STATE.semantic.appliedValue, undefined);
         await gsSet(context, STATE.semantic.appliedScope, undefined);
       }
@@ -531,7 +518,6 @@ async function applySemanticOverride(context, switchingRef, trace, scope) {
   const autoApplied = gsGet(context, STATE.semantic.applied, false) === true;
   const appliedValue = gsGet(context, STATE.semantic.appliedValue);
   const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
-  const scopeKey = stableScopeKey(scope);
   if (appliedValue === desired && appliedScopeKey === scopeKey && valueInTarget === desired) {
     trace?.line(`Semantic: already forced ${ desired ? "on" : "off" } in scope ${ scope || "global" }`);
     return;
@@ -567,7 +553,7 @@ async function applySemanticOverride(context, switchingRef, trace, scope) {
  */
 async function restoreSemanticOverride(context, switchingRef, trace, scope) {
 
-  const scopeKey = stableScopeKey(scope);
+  const scopeKey = utils.stableScopeKey(scope);
   const autoApplied = gsGet(context, STATE.semantic.applied, false) === true;
   if (!autoApplied) {
     const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
