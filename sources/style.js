@@ -398,14 +398,6 @@ async function restoreWholeTheme(context, switchingRef, trace, scope) {
 async function applyTokenOverlay(context, switchingRef, trace, scope) {
 
   const variant = resolveVariant(scope);
-
-  const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
-  if (!autoApplied) {
-    const editorCfg = cfg.cfg("editor", scope);
-    const rawCurrent = editorCfg.get("tokenColorCustomizations");
-    const current = cfg.asPlainObject(rawCurrent, {});
-    await gsSet(context, STATE.autotokens.savedCustomisations, current);
-  }
   const appliedVariant = gsGet(context, STATE.autotokens.appliedVariant);
   const appliedScope = gsGet(context, STATE.autotokens.appliedScope);
   if (appliedVariant === variant && appliedScope === scope) {
@@ -415,9 +407,15 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
 
   const editorCfg = cfg.cfg("editor", scope);
   const rawCurrent = editorCfg.get("tokenColorCustomizations");
-  const current = cfg.asPlainObject(rawCurrent, {});
-  const baseRules = stripInjectedRules(current.textMateRules);
-  const base = Object.assign({}, current, { textMateRules: baseRules });
+  const current = cfg.asPlainObject(rawCurrent, undefined);
+  const baseRules = stripInjectedRules(current?.textMateRules) ?? [];
+  const base = Object.assign({}, current ?? {}, { textMateRules: baseRules });
+  const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
+  if (!autoApplied) {
+    const saved = current ? Object.assign({}, current, { textMateRules: baseRules }) : undefined;
+    await gsSet(context, STATE.autotokens.savedCustomisations, saved);
+  }
+
   const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotokens.target));
   const target = storedTarget ?? cfg.pickTargetForKey("editor", "tokenColorCustomizations", scope);
   const themeTokenColors = await readTokenColorsFromThemeFile(context, variant, trace);
@@ -425,6 +423,9 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
   const next = Object.assign({}, base, { textMateRules: [...baseRules, ...injectedRules] });
 
   await cfg.updateSetting("editor", "tokenColorCustomizations", next, { switchingRef, target, scope });
+  await gsSet(context, STATE.autotokens.applied, true);
+  if (!storedTarget) await gsSet(context, STATE.autotokens.target, cfg.serialiseTarget(target));
+  await gsSet(context, STATE.autotokens.lastVariant, variant);
   await gsSet(context, STATE.autotokens.appliedVariant, variant);
   await gsSet(context, STATE.autotokens.appliedScope, scope);
   trace?.line(`AutoTokens: applied variant '${ variant }' in scope ${ scope || 'global' }`);
@@ -441,7 +442,33 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
 async function restoreTokenOverlay(context, switchingRef, trace, scope) {
 
   const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
-  if (!autoApplied) { return; }
+
+  const editorCfg = cfg.cfg("editor", scope);
+  const rawCurrent = editorCfg.get("tokenColorCustomizations");
+  const current = cfg.asPlainObject(rawCurrent, undefined);
+
+  const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotokens.target));
+  const target = storedTarget ?? cfg.pickTargetForKey("editor", "tokenColorCustomizations", scope);
+
+  // If we are not marked as auto-applied but our injected rules are present, try a best-effort cleanup.
+  if (!autoApplied) {
+    if (current && hasInjectedRules(current.textMateRules)) {
+      const baseRules = stripInjectedRules(current.textMateRules) ?? [];
+      const cleaned = Object.assign({}, current, { textMateRules: baseRules });
+      await cfg.updateSetting("editor", "tokenColorCustomizations", cleaned, { switchingRef, target, scope });
+      trace?.line(`AutoTokens: cleaned injected rules (not marked as auto-applied) in scope ${ scope || 'global' }`);
+    }
+    const appliedScope = gsGet(context, STATE.autotokens.appliedScope);
+    if (appliedScope === scope) {
+      await gsSet(context, STATE.autotokens.appliedVariant, undefined);
+      await gsSet(context, STATE.autotokens.appliedScope, undefined);
+    }
+    await gsSet(context, STATE.autotokens.applied, false);
+    await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
+    await gsSet(context, STATE.autotokens.target, undefined);
+    return;
+  }
+
   const appliedVariant = gsGet(context, STATE.autotokens.appliedVariant);
   const appliedScope = gsGet(context, STATE.autotokens.appliedScope);
   if (appliedVariant === undefined || appliedScope !== scope) {
@@ -449,19 +476,33 @@ async function restoreTokenOverlay(context, switchingRef, trace, scope) {
     if (appliedScope === scope) {
       await gsSet(context, STATE.autotokens.appliedVariant, undefined);
       await gsSet(context, STATE.autotokens.appliedScope, undefined);
+      await gsSet(context, STATE.autotokens.applied, false);
+      await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
+      await gsSet(context, STATE.autotokens.target, undefined);
     }
     return;
   }
 
-  const saved = gsGet(context, STATE.autotokens.savedCustomisations);
-  const target =
-    cfg.parseTarget(gsGet(context, STATE.autotokens.target)) ??
-    cfg.pickTargetForKey("editor", "tokenColorCustomizations", scope);
+  // Only restore if the current config still contains our injected rules; otherwise, assume it was changed externally.
+  if (current && !hasInjectedRules(current.textMateRules)) {
+    trace?.line(`AutoTokens: current customisations do not contain injected rules; not restoring in scope ${ scope || 'global' }`);
+  } else {
+    const saved = gsGet(context, STATE.autotokens.savedCustomisations);
+    const restored =
+      saved && typeof saved === "object"
+        ? Object.assign({}, saved, { textMateRules: stripInjectedRules(saved.textMateRules) })
+        : saved;
 
-  await cfg.updateSetting("editor", "tokenColorCustomizations", saved ?? undefined, { switchingRef, target, scope });
+    await cfg.updateSetting("editor", "tokenColorCustomizations", restored ?? undefined, { switchingRef, target, scope });
+    trace?.line(`AutoTokens: restored in scope ${ scope || 'global' }`);
+  }
+
   await gsSet(context, STATE.autotokens.appliedVariant, undefined);
   await gsSet(context, STATE.autotokens.appliedScope, undefined);
-  trace?.line(`AutoTokens: restored in scope ${ scope || 'global' }`);
+  await gsSet(context, STATE.autotokens.applied, false);
+  await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
+  await gsSet(context, STATE.autotokens.target, undefined);
+  await gsSet(context, STATE.autotokens.lastVariant, undefined);
 
 }
 
