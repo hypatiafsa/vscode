@@ -36,6 +36,46 @@ const KEY_STYLE_TRACE = `${ CFG_ROOT }.trace`;
 
 const INJECTED_RULE_PREFIX = "hypatia_autotokens";
 
+/**
+ * @property {Object} autotheme - Keys for managing the state of automatic theme
+ * application.
+ * @property {string} autotheme.applied - Key to indicate if the auto-theme has
+ * been applied (boolean).
+ * @property {string} autotheme.savedTheme - Key to save the original theme
+ * before automatic application.
+ * @property {string} autotheme.target - Key to save the configuration target
+ * used for the last theme change.
+ * @property {string} autotheme.appliedThemeLabel - Key to store the label of
+ * the theme currently applied automatically.
+ * @property {string} autotheme.appliedScope - Key to store the scope key where
+ * the theme was applied.
+ * @property {Object} autotokens - Keys for managing the state of automatic
+ * token color application.
+ * @property {string} autotokens.applied - Key to indicate if the auto-token has
+ * been applied (boolean).
+ * @property {string} autotokens.savedCustomisations - Key to save the original
+ * token customizations before automatic application.
+ * @property {string} autotokens.target - Key to save the configuration target
+ * used for the last token change.
+ * @property {string} autotokens.appliedVariant - Key to store the (light/dark)
+ * variant currently applied to tokens.
+ * @property {string} autotokens.appliedScope - Key to store the scope key where
+ * the tokens were applied.
+ * @property {Object} semantic - Keys for managing the state of automatic
+ * semantic highlighting override.
+ * @property {string} semantic.applied - Key to indicate if the semantic
+ * override has been applied (boolean).
+ * @property {string} semantic.savedEnabled - Key to save the original state of
+ * `editor.semanticHighlighting.enabled`.
+ * @property {string} semantic.target - Key to save the configuration target
+ * used for the last semantic override.
+ * @property {string} semantic.lastDesired - Key to store the last desired value
+ * for the override (true/false).
+ * @property {string} semantic.appliedValue - Key to store the value currently
+ * applied to the override.
+ * @property {string} semantic.appliedScope - Key to store the scope key where
+ * the override was applied.
+ */
 const STATE = {
   autotheme: {
     applied: `${ CFG_ROOT }.autotheme.applied`,
@@ -48,7 +88,6 @@ const STATE = {
     applied: `${ CFG_ROOT }.autotokens.applied`,
     savedCustomisations: `${ CFG_ROOT }.autotokens.savedTokenColorCustomizations`,
     target: `${ CFG_ROOT }.autotokens.appliedTarget`,
-    lastVariant: `${ CFG_ROOT }.autotokens.lastVariant`,
     appliedVariant: `${ CFG_ROOT }.autotokens.currentlyAppliedVariant`,
     appliedScope: `${ CFG_ROOT }.autotokens.currentlyAppliedScope`
   },
@@ -102,6 +141,27 @@ const gsGet = (ctx, k, d) => utils.gsGet(ctx, k, d);
  * complete, or undefined if context is invalid.
  */
 const gsSet = (ctx, k, v) => utils.gsSet(ctx, k, v);
+
+/*----------------------------------------------------------------------------*/
+
+/**
+ * Derives the configuration scope to use for a given editor.
+ * @param {vscode.TextEditor | undefined} editor - Editor to derive scope from.
+ * @returns {vscode.ConfigurationScope | undefined} A configuration scope.
+ */
+function scopeForEditor(editor) {
+  return editor?.document?.uri ?? undefined;
+}
+
+/**
+ * Attempts to parse a stored stable scope key back into a configuration scope.
+ * @param {string | undefined} scopeKey - Stored key.
+ * @returns {vscode.Uri | undefined} Parsed Uri scope.
+ */
+function scopeFromKey(scopeKey) {
+  if (!scopeKey) return undefined;
+  try { return vscode.Uri.parse(String(scopeKey)); } catch { return undefined; }
+}
 
 /*----------------------------------------------------------------------------*/
 
@@ -434,7 +494,6 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
   await gsSet(context, STATE.autotokens.applied, true);
   await gsSet(context, STATE.autotokens.appliedVariant, variant);
   await gsSet(context, STATE.autotokens.appliedScope, scopeKey);
-  await gsSet(context, STATE.autotokens.lastVariant, variant);
   trace?.line(`AutoTokens: applied variant '${ variant }' in scope ${ scope || 'global' }`);
 
 }
@@ -448,36 +507,48 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
  */
 async function restoreTokenOverlay(context, switchingRef, trace, scope) {
 
+  const scopeKey = utils.stableScopeKey(scope);
+  const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
+  const appliedScopeKey = gsGet(context, STATE.autotokens.appliedScope);
+  if (autoApplied && appliedScopeKey !== scopeKey) return;
+
   const editorCfg = utils.cfg("editor", scope);
   const rawCurrent = editorCfg.get("tokenColorCustomizations");
   const current = utils.asPlainObject(rawCurrent, {});
-  const hadInjected = hasInjectedRules(current.textMateRules);
-  const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
-  if (!autoApplied && !hadInjected) return;
+  const injectedNow = hasInjectedRules(current.textMateRules);
+  if (!autoApplied && !injectedNow) return;
 
   const storedTarget = utils.parseTarget(gsGet(context, STATE.autotokens.target));
   const target = storedTarget ?? utils.pickTargetForKey("editor", "tokenColorCustomizations", scope);
-  let targetValue;
-  if (autoApplied) {
-    const saved = gsGet(context, STATE.autotokens.savedCustomisations);
-    if (saved && typeof saved === "object") {
-      const savedObj = utils.asPlainObject(saved, {});
-      targetValue = Object.assign({}, savedObj, { textMateRules: stripInjectedRules(savedObj.textMateRules) });
+  const stripAndNormalise = () => {
+    const strippedRules = stripInjectedRules(current.textMateRules);
+    const base = Object.assign({}, current, { textMateRules: strippedRules });
+    const keys = Object.keys(base);
+    const onlyEmptyRules =
+      keys.length === 0 ||
+      (keys.length === 1 &&
+        keys[0] === "textMateRules" &&
+        Array.isArray(base.textMateRules) &&
+        base.textMateRules.length === 0);
+    return onlyEmptyRules ? undefined : base;
+  };
+  try {
+    if (injectedNow) {
+      const restored = stripAndNormalise();
+      await utils.updateSetting("editor", "tokenColorCustomizations", restored, { switchingRef, target, scope });
+      trace?.line(`AutoTokens: restored/cleaned in scope ${ scope || "global" }`);
     } else {
-      targetValue = undefined;
+      trace?.line(`AutoTokens: no injected rules found; not restoring settings in scope ${ scope || "global" }`);
     }
-  } else {
-    targetValue = Object.assign({}, current, { textMateRules: stripInjectedRules(current.textMateRules) });
+  } finally {
+    if (autoApplied) {
+      await gsSet(context, STATE.autotokens.applied, false);
+      await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
+      await gsSet(context, STATE.autotokens.target, undefined);
+      await gsSet(context, STATE.autotokens.appliedVariant, undefined);
+      await gsSet(context, STATE.autotokens.appliedScope, undefined);
+    }
   }
-
-  await utils.updateSetting("editor", "tokenColorCustomizations", targetValue, { switchingRef, target, scope });
-  await gsSet(context, STATE.autotokens.applied, false);
-  await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
-  await gsSet(context, STATE.autotokens.target, undefined);
-  await gsSet(context, STATE.autotokens.appliedVariant, undefined);
-  await gsSet(context, STATE.autotokens.appliedScope, undefined);
-  await gsSet(context, STATE.autotokens.lastVariant, undefined);
-  trace?.line(`AutoTokens: restored/cleaned in scope ${ scope || 'global' }`);
 
 }
 
@@ -555,8 +626,9 @@ async function restoreSemanticOverride(context, switchingRef, trace, scope) {
 
   const scopeKey = utils.stableScopeKey(scope);
   const autoApplied = gsGet(context, STATE.semantic.applied, false) === true;
+  const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
+  if (autoApplied && appliedScopeKey !== scopeKey) return;
   if (!autoApplied) {
-    const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
     if (appliedScopeKey === scopeKey) {
       await gsSet(context, STATE.semantic.appliedValue, undefined);
       await gsSet(context, STATE.semantic.appliedScope, undefined);
@@ -567,9 +639,23 @@ async function restoreSemanticOverride(context, switchingRef, trace, scope) {
   const storedTarget = utils.parseTarget(gsGet(context, STATE.semantic.target));
   const target = storedTarget ?? utils.pickTargetForKey("editor", "semanticHighlighting.enabled", scope);
   const saved = gsGet(context, STATE.semantic.savedEnabled);
+  const appliedValue = gsGet(context, STATE.semantic.appliedValue);
+  let shouldRestore = true;
   try {
-    await utils.updateSetting("editor", "semanticHighlighting.enabled", saved ?? undefined, { switchingRef, target, scope });
-    trace?.line(`Semantic: restored in scope ${ scope || "global" }`);
+    const inspected = utils.inspectKey("editor", "semanticHighlighting.enabled", scope);
+    const valueInTarget = utils.valueAtTarget(inspected, target);
+    if (typeof appliedValue === "boolean" && valueInTarget !== appliedValue) {
+      shouldRestore = false;
+      trace?.line(`Semantic: not restoring (user changed setting) in scope ${ scope || "global" }`);
+    }
+  } catch (err) {
+    utils.logError(err, "restoreSemanticOverride");
+  }
+  try {
+    if (shouldRestore) {
+      await utils.updateSetting("editor", "semanticHighlighting.enabled", saved ?? undefined, { switchingRef, target, scope });
+      trace?.line(`Semantic: restored in scope ${ scope || "global" }`);
+    }
   } finally {
     await gsSet(context, STATE.semantic.applied, false);
     await gsSet(context, STATE.semantic.savedEnabled, undefined);
@@ -579,6 +665,56 @@ async function restoreSemanticOverride(context, switchingRef, trace, scope) {
     await gsSet(context, STATE.semantic.appliedScope, undefined);
   }
 
+}
+
+/*----------------------------------------------------------------------------*/
+
+/**
+ * Ensures that style customizations (theme, tokens, semantic) applied in one
+ * configuration scope are properly restored if the active editor switches to a
+ * different scope.
+ * @param {vscode.ExtensionContext} context - The extension context, required
+ * for accessing `GlobalState`.
+ * @param {{value: boolean}} switchingRef - Reference object to signal ongoing
+ * updates.
+ * @param {Object | undefined} trace - Tracer object for logging actions related
+ * to scope drift prevention.
+ * @param {vscode.ConfigurationScope | null | undefined} currentScope - The
+ * scope of the currently active editor.
+ */
+async function ensureNoScopeDrift(context, switchingRef, trace, currentScope) {
+  const currentScopeKey = utils.stableScopeKey(currentScope);
+  const maybeRestore = async (label, stateAppliedKey, stateScopeKey, restoreFn) => {
+    const applied = gsGet(context, stateAppliedKey, false) === true;
+    if (!applied) return;
+    const appliedScopeKey = gsGet(context, stateScopeKey);
+    if (appliedScopeKey === currentScopeKey) return;
+    trace?.line(`${ label }: scope changed; restoring previous scope before applying to the new one.`);
+    await restoreFn(context, switchingRef, trace, scopeFromKey(appliedScopeKey));
+  };
+  await maybeRestore("AutoTokens", STATE.autotokens.applied, STATE.autotokens.appliedScope, restoreTokenOverlay);
+  await maybeRestore("Semantic", STATE.semantic.applied, STATE.semantic.appliedScope, restoreSemanticOverride);
+  await maybeRestore("AutoTheme", STATE.autotheme.applied, STATE.autotheme.appliedScope, restoreWholeTheme);
+}
+
+/**
+ * Iterates through the persistent state and restores all style customizations
+ * (theme, tokens, semantic) that are currently marked as applied, regardless of
+ * the current active editor.
+ * @param {vscode.ExtensionContext} context - The extension context, required
+ * for accessing `GlobalState`.
+ * @param {{value: boolean}} switchingRef - Reference object to signal ongoing
+ * updates.
+ * @param {Object | undefined} trace - Tracer object for logging actions related
+ * to the bulk restoration.
+ */
+async function restoreAllApplied(context, switchingRef, trace) {
+  const tokensScope = scopeFromKey(gsGet(context, STATE.autotokens.appliedScope));
+  const semScope = scopeFromKey(gsGet(context, STATE.semantic.appliedScope));
+  const themeScope = scopeFromKey(gsGet(context, STATE.autotheme.appliedScope));
+  await restoreTokenOverlay(context, switchingRef, trace, tokensScope);
+  await restoreSemanticOverride(context, switchingRef, trace, semScope);
+  await restoreWholeTheme(context, switchingRef, trace, themeScope);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -619,7 +755,7 @@ async function reconcile(context, editor, switchingRef, lastWasHypatiaRef, reaso
     return;
   }
 
-  const scope = undefined;
+  const scope = scopeForEditor(editor);
   const isHyp = utils.isHypatiaEditor(editor);
   if (isHyp) {
     leaveRef?.cancel?.();
@@ -630,6 +766,7 @@ async function reconcile(context, editor, switchingRef, lastWasHypatiaRef, reaso
       if (!needsReapply) return;
     }
     lastWasHypatiaRef.value = true;
+    await ensureNoScopeDrift(context, switchingRef, trace, scope);
     const semanticMode = getSemanticMode(scope);
     if (semanticMode === "inherit") await restoreSemanticOverride(context, switchingRef, trace, scope);
     else await applySemanticOverride(context, switchingRef, trace, scope);
@@ -683,9 +820,7 @@ export function activateStyle(context) {
     return queue.enqueue(async () => {
       try {
         trace?.line(`Leaving Hypatia (${ why })`);
-        await restoreTokenOverlay(context, switchingRef, trace, undefined);
-        await restoreSemanticOverride(context, switchingRef, trace, undefined);
-        await restoreWholeTheme(context, switchingRef, trace, undefined);
+        await restoreAllApplied(context, switchingRef, trace);
       } finally {
         lastWasHypatiaRef.value = false;
       }
@@ -759,9 +894,7 @@ export function activateStyle(context) {
     for (const d of disposables) { try { d.dispose(); } catch { } }
     await queue.enqueue(async () => {
       try {
-        await restoreTokenOverlay(context, switchingRef, trace, undefined);
-        await restoreSemanticOverride(context, switchingRef, trace, undefined);
-        await restoreWholeTheme(context, switchingRef, trace, undefined);
+        await restoreAllApplied(context, switchingRef, trace);
       } catch (err) {
         utils.logError(err, `${ CFG_ROOT }.dispose`);
       } finally {
