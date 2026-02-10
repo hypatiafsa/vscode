@@ -13,7 +13,7 @@
 
 import { activateStyle } from "./sources/style.js";
 
-import cfg from "./sources/utils.js";
+import { logError } from "./sources/utils.js";
 
 /*----------------------------------------------------------------------------*/
 
@@ -24,7 +24,7 @@ export function activate(context) {
     styleHandle = activateStyle(context);
     if (styleHandle) context.subscriptions.push(styleHandle);
   } catch (err) {
-    cfg.logError(err);
+    logError(err);
   }
 }
 
@@ -35,13 +35,13 @@ export function deactivate() {
   try {
     if (typeof hnd.disposeAsync === "function") {
       const prm = hnd.disposeAsync();
-      return Promise.resolve(prm).catch((err) => cfg.logError(err));
+      return Promise.resolve(prm).catch((err) => logError(err));
     }
     if (typeof hnd.dispose === "function") {
       hnd.dispose();
     }
   } catch (err) {
-    cfg.logError(err);
+    logError(err);
   }
   return undefined;
 }

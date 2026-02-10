@@ -14,7 +14,7 @@
 import * as vscode from "vscode";
 import { readFile } from "node:fs/promises";
 
-import cfg from "./utils.js";
+import utils from "./utils.js";
 
 const { workspace, window } = vscode;
 
@@ -72,7 +72,7 @@ const STATE = {
  * @returns {Object} An object with a `line` method for conditional logging.
  */
 function makeTracer(context) {
-  return cfg.makeConfigBasedTracer(context, CFG_ROOT, STYLE_CHANNEL, "trace");
+  return utils.makeConfigBasedTracer(context, CFG_ROOT, STYLE_CHANNEL, "trace");
 }
 
 /*----------------------------------------------------------------------------*/
@@ -82,7 +82,7 @@ function makeTracer(context) {
  * @param {vscode.ConfigurationScope | null | undefined} scope - Optional scope.
  * @returns {vscode.WorkspaceConfiguration} The configuration.
  */
-const styleCfg = (scope) => cfg.cfg(CFG_ROOT, scope);
+const styleCfg = (scope) => utils.cfg(CFG_ROOT, scope);
 
 /**
  * Gets a value from the GlobalState of the extension.
@@ -91,7 +91,7 @@ const styleCfg = (scope) => cfg.cfg(CFG_ROOT, scope);
  * @param {*} [d] - Default value.
  * @returns {*} The retrieved value or the default.
  */
-const gsGet = (ctx, k, d) => cfg.gsGet(ctx, k, d);
+const gsGet = (ctx, k, d) => utils.gsGet(ctx, k, d);
 
 /**
  * Sets a value in the GlobalState of the extension.
@@ -101,7 +101,7 @@ const gsGet = (ctx, k, d) => cfg.gsGet(ctx, k, d);
  * @returns {Thenable<void> | undefined} Promise resolving when the update is
  * complete, or undefined if context is invalid.
  */
-const gsSet = (ctx, k, v) => cfg.gsSet(ctx, k, v);
+const gsSet = (ctx, k, v) => utils.gsSet(ctx, k, v);
 
 /**
  * Produces a stable, JSON-serialisable key for a configuration scope.
@@ -144,7 +144,7 @@ function getAutoTokensEnabled(scope) {
  */
 function getThemeVariant(scope) {
   const raw = styleCfg(scope).get("variant", "auto");
-  return cfg.normaliseEnum(String(raw ?? "auto"), ["light", "dark", "auto"], "auto");
+  return utils.normaliseEnum(String(raw ?? "auto"), ["light", "dark", "auto"], "auto");
 }
 
 /**
@@ -163,7 +163,7 @@ function resolveVariant(scope) {
  * @returns {boolean} True if the theme is light.
  */
 function currentThemeKindIsLight() {
-  return cfg.isLightThemeKind(window.activeColorTheme.kind);
+  return utils.isLightThemeKind(window.activeColorTheme.kind);
 }
 
 /**
@@ -191,7 +191,7 @@ function themeFileForVariant(variant) {
  */
 function getSemanticMode(scope) {
   const raw = styleCfg(scope).get("semantichighlighting", "inherit");
-  return cfg.normaliseEnum(String(raw ?? "inherit"), ["on", "off", "inherit"], "inherit");
+  return utils.normaliseEnum(String(raw ?? "inherit"), ["on", "off", "inherit"], "inherit");
 }
 
 /*----------------------------------------------------------------------------*/
@@ -217,7 +217,7 @@ async function readTokenColorsFromThemeFile(context, variant, trace) {
     return rules.slice();
   } catch (err) {
     trace?.line(`AutoTokens: failed reading ${ rel }`);
-    cfg.logError(err, "hypatia.style");
+    utils.logError(err, "hypatia.style");
     _themeTokenColorsCache.set(variant, []);
     return [];
   }
@@ -231,7 +231,7 @@ async function readTokenColorsFromThemeFile(context, variant, trace) {
  * @returns {Array<any>} New array of cloned rules with prefixed names.
  */
 const buildInjectedRules = (themeTokenColors) =>
-  cfg.cloneTextMateRulesWithInjectedNames(themeTokenColors, INJECTED_RULE_PREFIX);
+  utils.cloneTextMateRulesWithInjectedNames(themeTokenColors, INJECTED_RULE_PREFIX);
 
 /**
  * Filters an array of TextMate rules, removing those whose name starts with the
@@ -241,7 +241,7 @@ const buildInjectedRules = (themeTokenColors) =>
  * @returns {Array<any>} New filtered array without injected rules.
  */
 const stripInjectedRules = (rules) =>
-  cfg.stripRulesWithNamePrefix(rules, INJECTED_RULE_PREFIX);
+  utils.stripRulesWithNamePrefix(rules, INJECTED_RULE_PREFIX);
 
 /**
  * Checks if an array of TextMate rules contains at least one rule whose name
@@ -251,7 +251,7 @@ const stripInjectedRules = (rules) =>
  * @returns {boolean} True if at least one injected rule is found.
  */
 const hasInjectedRules = (rules) =>
-  cfg.hasRulesWithNamePrefix(rules, INJECTED_RULE_PREFIX);
+  utils.hasRulesWithNamePrefix(rules, INJECTED_RULE_PREFIX);
 
 /*----------------------------------------------------------------------------*/
 
@@ -263,10 +263,10 @@ const hasInjectedRules = (rules) =>
  * @param {vscode.ConfigurationScope | null | undefined} scope - Optional scope.
  */
 async function setWorkbenchTheme(themeLabel, switchingRef, target, scope) {
-  const wb = cfg.cfg("workbench", scope);
+  const wb = utils.cfg("workbench", scope);
   const current = wb.get("colorTheme");
   if (!current || current === themeLabel) return;
-  await cfg.updateSetting("workbench", "colorTheme", themeLabel, { switchingRef, target, scope });
+  await utils.updateSetting("workbench", "colorTheme", themeLabel, { switchingRef, target, scope });
 }
 
 /**
@@ -293,7 +293,7 @@ async function applyWholeTheme(context, switchingRef, trace, scope) {
     return;
   }
 
-  const wb = cfg.cfg("workbench", scope);
+  const wb = utils.cfg("workbench", scope);
   const currentVscodeTheme = wb.get("colorTheme");
   const desiredVariant = resolveVariant(scope);
   const desiredThemeLabel = themeLabelForVariant(desiredVariant);
@@ -303,8 +303,8 @@ async function applyWholeTheme(context, switchingRef, trace, scope) {
       await gsSet(context, STATE.autotheme.appliedScope, scopeKey);
       if (!gsGet(context, STATE.autotheme.applied, false)) {
         await gsSet(context, STATE.autotheme.applied, true);
-        const target = cfg.pickTargetForKey("workbench", "colorTheme", scope);
-        await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
+        const target = utils.pickTargetForKey("workbench", "colorTheme", scope);
+        await gsSet(context, STATE.autotheme.target, utils.serialiseTarget(target));
       }
       trace?.line(`AutoTheme: theme ${ desiredThemeLabel } already active in VSCode, synced local state in scope ${ scope || 'global' }`);
     }
@@ -316,13 +316,13 @@ async function applyWholeTheme(context, switchingRef, trace, scope) {
   }
 
   const currentIsHypatia = currentVscodeTheme === THEME_LABEL_DARK || currentVscodeTheme === THEME_LABEL_LIGHT;
-  const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotheme.target));
-  const target = storedTarget ?? cfg.pickTargetForKey("workbench", "colorTheme", scope);
+  const storedTarget = utils.parseTarget(gsGet(context, STATE.autotheme.target));
+  const target = storedTarget ?? utils.pickTargetForKey("workbench", "colorTheme", scope);
   if (!currentIsHypatia) {
     await setWorkbenchTheme(desiredThemeLabel, switchingRef, target, scope);
     await gsSet(context, STATE.autotheme.applied, true);
     await gsSet(context, STATE.autotheme.savedTheme, currentVscodeTheme);
-    await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
+    await gsSet(context, STATE.autotheme.target, utils.serialiseTarget(target));
     await gsSet(context, STATE.autotheme.appliedThemeLabel, desiredThemeLabel);
     await gsSet(context, STATE.autotheme.appliedScope, scopeKey);
     trace?.line(`AutoTheme: switched to ${ desiredThemeLabel } in scope ${ scope || 'global' } (saved ${ currentVscodeTheme })`);
@@ -334,7 +334,7 @@ async function applyWholeTheme(context, switchingRef, trace, scope) {
   await gsSet(context, STATE.autotheme.appliedScope, scopeKey);
   trace?.line(`AutoTheme: adjusted to ${ desiredThemeLabel } in scope ${ scope || 'global' }`);
   if (!storedTarget && gsGet(context, STATE.autotheme.applied, false) === true) {
-    await gsSet(context, STATE.autotheme.target, cfg.serialiseTarget(target));
+    await gsSet(context, STATE.autotheme.target, utils.serialiseTarget(target));
   }
 
 }
@@ -372,12 +372,12 @@ async function restoreWholeTheme(context, switchingRef, trace, scope) {
     return;
   }
 
-  const wb = cfg.cfg("workbench", scope);
+  const wb = utils.cfg("workbench", scope);
   const currentVscodeTheme = wb.get("colorTheme");
   const savedTheme = gsGet(context, STATE.autotheme.savedTheme);
   const target =
-    cfg.parseTarget(gsGet(context, STATE.autotheme.target)) ??
-    cfg.pickTargetForKey("workbench", "colorTheme", scope);
+    utils.parseTarget(gsGet(context, STATE.autotheme.target)) ??
+    utils.pickTargetForKey("workbench", "colorTheme", scope);
   try {
     if (currentVscodeTheme === appliedLabel && typeof savedTheme === "string" && savedTheme.length > 0) {
       await setWorkbenchTheme(savedTheme, switchingRef, target, scope);
@@ -410,9 +410,9 @@ async function restoreWholeTheme(context, switchingRef, trace, scope) {
 async function applyTokenOverlay(context, switchingRef, trace, scope) {
 
   const scopeKey = stableScopeKey(scope);
-  const editorCfg = cfg.cfg("editor", scope);
+  const editorCfg = utils.cfg("editor", scope);
   const rawCurrent = editorCfg.get("tokenColorCustomizations");
-  const current = cfg.asPlainObject(rawCurrent, {});
+  const current = utils.asPlainObject(rawCurrent, {});
   const currentlyHasInjected = hasInjectedRules(current.textMateRules);
   const variant = resolveVariant(scope);
   const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
@@ -423,20 +423,20 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
     return;
   }
 
-  const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotokens.target));
-  const target = storedTarget ?? cfg.pickTargetForKey("editor", "tokenColorCustomizations", scope);
+  const storedTarget = utils.parseTarget(gsGet(context, STATE.autotokens.target));
+  const target = storedTarget ?? utils.pickTargetForKey("editor", "tokenColorCustomizations", scope);
   if (!autoApplied) {
     const baseline = Object.assign({}, current, { textMateRules: stripInjectedRules(current.textMateRules) });
     await gsSet(context, STATE.autotokens.savedCustomisations, baseline);
     await gsSet(context, STATE.autotokens.applied, true);
-    await gsSet(context, STATE.autotokens.target, cfg.serialiseTarget(target));
+    await gsSet(context, STATE.autotokens.target, utils.serialiseTarget(target));
   } else {
     const saved = gsGet(context, STATE.autotokens.savedCustomisations);
     if (saved === undefined) {
       const baseline = Object.assign({}, current, { textMateRules: stripInjectedRules(current.textMateRules) });
       await gsSet(context, STATE.autotokens.savedCustomisations, baseline);
     }
-    if (!storedTarget) await gsSet(context, STATE.autotokens.target, cfg.serialiseTarget(target));
+    if (!storedTarget) await gsSet(context, STATE.autotokens.target, utils.serialiseTarget(target));
   }
 
   const baseRules = stripInjectedRules(current.textMateRules);
@@ -444,7 +444,7 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
   const themeTokenColors = await readTokenColorsFromThemeFile(context, variant, trace);
   const injectedRules = buildInjectedRules(themeTokenColors);
   const next = Object.assign({}, base, { textMateRules: [...baseRules, ...injectedRules] });
-  await cfg.updateSetting("editor", "tokenColorCustomizations", next, { switchingRef, target, scope });
+  await utils.updateSetting("editor", "tokenColorCustomizations", next, { switchingRef, target, scope });
   await gsSet(context, STATE.autotokens.applied, true);
   await gsSet(context, STATE.autotokens.appliedVariant, variant);
   await gsSet(context, STATE.autotokens.appliedScope, scopeKey);
@@ -462,20 +462,20 @@ async function applyTokenOverlay(context, switchingRef, trace, scope) {
  */
 async function restoreTokenOverlay(context, switchingRef, trace, scope) {
 
-  const editorCfg = cfg.cfg("editor", scope);
+  const editorCfg = utils.cfg("editor", scope);
   const rawCurrent = editorCfg.get("tokenColorCustomizations");
-  const current = cfg.asPlainObject(rawCurrent, {});
+  const current = utils.asPlainObject(rawCurrent, {});
   const hadInjected = hasInjectedRules(current.textMateRules);
   const autoApplied = gsGet(context, STATE.autotokens.applied, false) === true;
   if (!autoApplied && !hadInjected) return;
 
-  const storedTarget = cfg.parseTarget(gsGet(context, STATE.autotokens.target));
-  const target = storedTarget ?? cfg.pickTargetForKey("editor", "tokenColorCustomizations", scope);
+  const storedTarget = utils.parseTarget(gsGet(context, STATE.autotokens.target));
+  const target = storedTarget ?? utils.pickTargetForKey("editor", "tokenColorCustomizations", scope);
   let targetValue;
   if (autoApplied) {
     const saved = gsGet(context, STATE.autotokens.savedCustomisations);
     if (saved && typeof saved === "object") {
-      const savedObj = cfg.asPlainObject(saved, {});
+      const savedObj = utils.asPlainObject(saved, {});
       targetValue = Object.assign({}, savedObj, { textMateRules: stripInjectedRules(savedObj.textMateRules) });
     } else {
       targetValue = undefined;
@@ -484,7 +484,7 @@ async function restoreTokenOverlay(context, switchingRef, trace, scope) {
     targetValue = Object.assign({}, current, { textMateRules: stripInjectedRules(current.textMateRules) });
   }
 
-  await cfg.updateSetting("editor", "tokenColorCustomizations", targetValue, { switchingRef, target, scope });
+  await utils.updateSetting("editor", "tokenColorCustomizations", targetValue, { switchingRef, target, scope });
   await gsSet(context, STATE.autotokens.applied, false);
   await gsSet(context, STATE.autotokens.savedCustomisations, undefined);
   await gsSet(context, STATE.autotokens.target, undefined);
@@ -523,11 +523,11 @@ async function applySemanticOverride(context, switchingRef, trace, scope) {
   }
 
   const desired = mode === "on";
-  const editorCfg = cfg.cfg("editor", scope);
-  const storedTarget = cfg.parseTarget(gsGet(context, STATE.semantic.target));
-  const target = storedTarget ?? cfg.pickTargetForKey("editor", "semanticHighlighting.enabled", scope);
-  const inspected = cfg.inspectKey("editor", "semanticHighlighting.enabled", scope);
-  const valueInTarget = cfg.valueAtTarget(inspected, target);
+  const editorCfg = utils.cfg("editor", scope);
+  const storedTarget = utils.parseTarget(gsGet(context, STATE.semantic.target));
+  const target = storedTarget ?? utils.pickTargetForKey("editor", "semanticHighlighting.enabled", scope);
+  const inspected = utils.inspectKey("editor", "semanticHighlighting.enabled", scope);
+  const valueInTarget = utils.valueAtTarget(inspected, target);
   const autoApplied = gsGet(context, STATE.semantic.applied, false) === true;
   const appliedValue = gsGet(context, STATE.semantic.appliedValue);
   const appliedScopeKey = gsGet(context, STATE.semantic.appliedScope);
@@ -541,16 +541,16 @@ async function applySemanticOverride(context, switchingRef, trace, scope) {
     if (editorCfg.get("semanticHighlighting.enabled") === desired) return;
     await gsSet(context, STATE.semantic.savedEnabled, valueInTarget);
     await gsSet(context, STATE.semantic.applied, true);
-    await gsSet(context, STATE.semantic.target, cfg.serialiseTarget(target));
+    await gsSet(context, STATE.semantic.target, utils.serialiseTarget(target));
   } else {
     const lastDesired = gsGet(context, STATE.semantic.lastDesired);
     if (typeof lastDesired === "boolean" && valueInTarget !== lastDesired) {
       await gsSet(context, STATE.semantic.savedEnabled, valueInTarget);
     }
-    if (!storedTarget) await gsSet(context, STATE.semantic.target, cfg.serialiseTarget(target));
+    if (!storedTarget) await gsSet(context, STATE.semantic.target, utils.serialiseTarget(target));
   }
 
-  await cfg.updateSetting("editor", "semanticHighlighting.enabled", desired, { switchingRef, target, scope });
+  await utils.updateSetting("editor", "semanticHighlighting.enabled", desired, { switchingRef, target, scope });
   await gsSet(context, STATE.semantic.lastDesired, desired);
   await gsSet(context, STATE.semantic.appliedValue, desired);
   await gsSet(context, STATE.semantic.appliedScope, scopeKey);
@@ -578,11 +578,11 @@ async function restoreSemanticOverride(context, switchingRef, trace, scope) {
     return;
   }
 
-  const storedTarget = cfg.parseTarget(gsGet(context, STATE.semantic.target));
-  const target = storedTarget ?? cfg.pickTargetForKey("editor", "semanticHighlighting.enabled", scope);
+  const storedTarget = utils.parseTarget(gsGet(context, STATE.semantic.target));
+  const target = storedTarget ?? utils.pickTargetForKey("editor", "semanticHighlighting.enabled", scope);
   const saved = gsGet(context, STATE.semantic.savedEnabled);
   try {
-    await cfg.updateSetting("editor", "semanticHighlighting.enabled", saved ?? undefined, { switchingRef, target, scope });
+    await utils.updateSetting("editor", "semanticHighlighting.enabled", saved ?? undefined, { switchingRef, target, scope });
     trace?.line(`Semantic: restored in scope ${ scope || "global" }`);
   } finally {
     await gsSet(context, STATE.semantic.applied, false);
@@ -632,7 +632,7 @@ async function reconcile(context, editor, switchingRef, lastWasHypatiaRef, reaso
   }
 
   const scope = undefined;
-  const isHyp = cfg.isHypatiaEditor(editor);
+  const isHyp = utils.isHypatiaEditor(editor);
   if (isHyp) {
     leaveRef?.cancel?.();
     if (!lastWasHyp) {
@@ -676,9 +676,9 @@ export function activateStyle(context) {
   const lastWasHypatiaRef = { value: false };
   const reasonsRef = { init: true, editor: false, theme: false, config: false };
   const trace = makeTracer(context);
-  const queue = cfg.createSerialQueue((err) => {
+  const queue = utils.createSerialQueue((err) => {
     try { trace?.line(`Error: ${ String(err?.message ?? err) }`); } catch { }
-    cfg.logError(err, "hypatia.style");
+    utils.logError(err, "hypatia.style");
   });
   const disposables = [];
   const schedule = (fn) =>
@@ -721,15 +721,15 @@ export function activateStyle(context) {
     scheduleNoActive: () =>
       scheduleLeave("no active editor", () => {
         const ed = window.activeTextEditor;
-        if (ed && cfg.isHypatiaEditor(ed)) return false;
-        if (window.visibleTextEditors.some(cfg.isHypatiaEditor)) return false;
+        if (ed && utils.isHypatiaEditor(ed)) return false;
+        if (window.visibleTextEditors.some(utils.isHypatiaEditor)) return false;
         return !ed || !ed.document;
       }),
     scheduleNonHyp: () =>
       scheduleLeave("active editor not Hypatia", () => {
         const ed = window.activeTextEditor;
         if (!ed || !ed.document) return false;
-        return !cfg.isHypatiaEditor(ed);
+        return !utils.isHypatiaEditor(ed);
       })
   };
 
@@ -775,7 +775,7 @@ export function activateStyle(context) {
         await restoreSemanticOverride(context, switchingRef, trace, undefined);
         await restoreWholeTheme(context, switchingRef, trace, undefined);
       } catch (err) {
-        cfg.logError(err, `${ CFG_ROOT }.dispose`);
+        utils.logError(err, `${ CFG_ROOT }.dispose`);
       } finally {
         lastWasHypatiaRef.value = false;
       }
