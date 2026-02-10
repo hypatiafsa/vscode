@@ -10,7 +10,7 @@ Development version, not yet released to the public.
 
 ### Added
 
-- First draft of the client for the Hypatia Language Server.
+- Initial implementation of the Hypatia Language Server client.
 
 ## [0.0.2] [*2026.02.10*]
 
@@ -20,7 +20,8 @@ Development version, not yet released to the public.
 
 ### Changed
 
-- Refactored sources in preparation for the Hypatia Language Server integration.
+- Refactored codebase in preparation for Hypatia Language Server integration.
+- Added code documentation for improved readability and maintainability.
 
 ## [0.0.1] [*2026.02.07*]
 
