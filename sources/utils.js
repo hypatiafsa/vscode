@@ -229,6 +229,23 @@ function createTracer(context, channelName, enabledFn, { prefix = "" } = {}) {
   };
 }
 
+/**
+ * Factory function to create a tracer checking a specific trace flag under a
+ * config root.
+ * @param {vscode.ExtensionContext} context - Extension context.
+ * @param {string} configRoot - The root configuration key (e.g.,
+ * "hypatia.style", "hypatia.hls").
+ * @param {string} channelName - Name of the output channel.
+ * @param {string} [traceFlagName="trace"] - The name of the boolean flag within
+ * the config root.
+ * @param {string} [defaultPrefix=""] - Default prefix for the tracer.
+ * @returns {Object} An object with the `line` method.
+ */
+function makeConfigBasedTracer(context, configRoot, channelName, traceFlagName = "trace", defaultPrefix = "") {
+  const enabled = () => cfg(configRoot).get(traceFlagName, false) === true;
+  return createTracer(context, channelName, enabled, { prefix: defaultPrefix });
+}
+
 // General helpers -------------------------------------------------------------
 
 /**
@@ -324,7 +341,7 @@ export default {
 
   isHypatiaEditor, isLightThemeKind,
 
-  logError, logWarning, createTracer,
+  logError, logWarning, createTracer, makeConfigBasedTracer,
 
   normaliseEnum, asPlainObject, hasRulesWithNamePrefix,
   stripRulesWithNamePrefix, cloneTextMateRulesWithInjectedNames,
