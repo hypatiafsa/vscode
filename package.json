@@ -93,6 +93,18 @@
           ],
           "description": "Style: When autotheme or autotokens are enabled, defines which Hypatia theme variant (light/dark) to apply; 'auto' means to follow the current VSCode theme."
         },
+        "hypatia.style.semantichighlighting": {
+          "type": "string",
+          "scope": "window",
+          "default": "inherit",
+          "enum": [ "on", "off", "inherit" ],
+          "enumDescriptions": [
+            "Force semantic highlighting on while a Hypatia editor is active.",
+            "Force semantic highlighting off while a Hypatia editor is active.",
+            "Do not override VSCode semantic highlighting setting."
+          ],
+          "description": "Style: Controls whether semantic highlighting is forced on/off while a Hypatia editor is active; 'inherit' leaves the user's setting unchanged."
+        },
         "hypatia.style.trace": {
           "type": "boolean",
           "scope": "window",
