@@ -5,7 +5,7 @@
   "description": "Hypatia language support for VSCode",
   "author": "hypatiadevteam",
   "publisher": "hypatiafsa",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://hypatiafsa.github.io/",
   "repository": {
     "type": "git",
@@ -66,9 +66,82 @@
         "editor.tabSize": 2
       }
     },
+    "commands": [
+      {
+        "command": "hypatia.hls.server",
+        "title": "Turn on/off HLS"
+      },
+      {
+        "command": "hypatia.hls.restart",
+        "title": "Restart HLS"
+      },
+      {
+        "command": "hypatia.hls.validate",
+        "title": "Validate current editor"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "hypatia.hls.server"
+        },
+        {
+          "command": "hypatia.hls.restart",
+          "when": "editorLangId == hypatia"
+        },
+        {
+          "command": "hypatia.hls.validate",
+          "when": "editorLangId == hypatia"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "hypatia.hls.restart",
+        "key": "ctrl+k ctrl+enter",
+        "when": "editorTextFocus && editorLangId == hypatia"
+      },
+      {
+        "command": "hypatia.hls.validate",
+        "key": "ctrl+k ctrl+v",
+        "when": "editorTextFocus && editorLangId == hypatia"
+      }
+    ],
     "configuration": {
       "title": "Hypatia",
       "properties": {
+        "hypatia.hls.enabled": {
+          "type": "boolean",
+          "scope": "window",
+          "default": true,
+          "description": "HLS: Enable Hypatia Language Server."
+        },
+        "hypatia.hls.path": {
+          "type": "string",
+          "scope": "window",
+          "default": "",
+          "description": "HLS: Path to the HLS executable."
+        },
+        "hypatia.hls.args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "scope": "window",
+          "default": [],
+          "description": "HLS: Arguments passed to the HLS executable."
+        },
+        "hypatia.hls.trace": {
+          "type": "string",
+          "scope": "window",
+          "default": "off",
+          "enum": ["off", "messages", "verbose"],
+          "description": "HLS: Trace LSP client/server messages to the HLS output channel."
+        },
+        "hypatia.hls.shutdowndelay": {
+          "type": "number",
+          "scope": "window",
+          "default": 5000,
+          "description": "HLS: How long (ms) to keep the HLS running after the last Hypatia editor is closed."
+        },
         "hypatia.style.autotheme": {
           "type": "boolean",
           "scope": "window",

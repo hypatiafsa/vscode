@@ -2,7 +2,7 @@
 
 List of notable changes to the Hypatia-VSCode language-support extension.
 
-## [Unreleased] [*2026.02.10*]
+## [Unreleased] [*2026.02.11*]
 
 [unreleased]: https://github.com/hypatiafsa/vscode/tree/dev
 
