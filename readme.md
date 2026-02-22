@@ -2,6 +2,18 @@
 
 Hypatia Language Support for VSCode
 
+[![Tag]](https://github.com/hypatiafsa/vscode/tags)
+[![Release]](https://github.com/hypatiafsa/vscode/releases)
+[![License]](https://opensource.org/license/uoi-ncsa-php)
+
+[![Marketplace]](https://marketplace.visualstudio.com/items?itemName=hypatiafsa.hypatia)
+
+[tag]: https://img.shields.io/github/v/tag/hypatiafsa/vscode
+[release]: https://img.shields.io/github/v/release/hypatiafsa/vscode
+[license]: https://img.shields.io/badge/License-Illinois-blue.svg
+
+[Marketplace]: https://img.shields.io/visual-studio-marketplace/v/hypatiafsa.hypatia
+
 ---
 
 ### Table of Contents
