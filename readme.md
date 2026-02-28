@@ -11,14 +11,14 @@ Hypatia Language Support for VSCode
 [![OpenVSXV]](https://open-vsx.org/extension/hypatiafsa/hypatia)
 [![OpenVSXD]](https://open-vsx.org/extension/hypatiafsa/hypatia)
 
-[release]: https://img.shields.io/github/v/release/hypatiafsa/vscode
-[tag]: https://img.shields.io/github/v/tag/hypatiafsa/vscode
+[release]: https://img.shields.io/github/v/release/hypatiafsa/vscode?label=Release
+[tag]: https://img.shields.io/github/v/tag/hypatiafsa/vscode?label=Tag
 [license]: https://img.shields.io/badge/License-Illinois-blue.svg
 
-[marketplacev]: https://img.shields.io/visual-studio-marketplace/v/hypatiafsa.hypatia
-[marketplacei]: https://img.shields.io/visual-studio-marketplace/i/hypatiafsa.hypatia
-[openvsxv]: https://img.shields.io/open-vsx/v/hypatiafsa/hypatia
-[openvsxd]: https://img.shields.io/open-vsx/dt/hypatiafsa/hypatia
+[marketplacev]: https://img.shields.io/visual-studio-marketplace/v/hypatiafsa.hypatia?label=MarketPlace
+[marketplacei]: https://img.shields.io/visual-studio-marketplace/i/hypatiafsa.hypatia?label=MP+Installs
+[openvsxv]: https://img.shields.io/open-vsx/v/hypatiafsa/hypatia?label=Open+VSX
+[openvsxd]: https://img.shields.io/open-vsx/dt/hypatiafsa/hypatia?label=OVSX+Downloads
 
 ---
 
